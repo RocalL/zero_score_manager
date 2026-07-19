@@ -88,7 +88,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 playerId to score
             }
 
-            repository.addRoundScores(gameId, round, scoreList, _zeros.toList())
+            repository.addRoundScores(gameId, round, scoreList, _zeros.value.toList())
             _currentRound.value = round + 1
             _scores.value = _selectedPlayerIds.value.associateWith { "0" }
             _zeros.value = emptySet()
