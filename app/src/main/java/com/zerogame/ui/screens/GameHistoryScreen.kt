@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.zerogame.data.model.Game
-import com.zerogame.data.model.Player
 import com.zerogame.viewmodel.GameHistoryViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -146,7 +145,7 @@ fun GameHistoryItem(
 
             if (expanded) {
                 Spacer(modifier = Modifier.height(8.dp))
-                HorizontalDivider()
+                Divider()
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (gamePlayers.isNotEmpty()) {
