@@ -6,7 +6,7 @@
     <string name="home_new_game">New Game</string>
     <string name="home_players">Players</string>
     <string name="home_history">History</string>
-    <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_by_author">by RocalL</string>
     <string name="home_select_game">Select a game</string>
 
     <!-- Game Descriptions -->
@@ -125,6 +125,18 @@
     <string name="kpi_avg_pts">Avg Pts</string>
     <string name="kpi_total_pts">Total Pts</string>
     <string name="profile_no_games">No games played yet</string>
+
+    <!-- Data Management -->
+    <string name="data_management">Data</string>
+    <string name="data_export">Export</string>
+    <string name="data_import">Import</string>
+    <string name="data_sample">Sample</string>
+    <string name="export_success">Database exported</string>
+    <string name="export_error">Export failed: %1$s</string>
+    <string name="import_success">Database imported</string>
+    <string name="import_error">Import failed: %1$s</string>
+    <string name="sample_loaded">Sample data loaded</string>
+    <string name="sample_error">Sample error: %1$s</string>
 
     <!-- Language -->
     <string name="language_en">EN</string>

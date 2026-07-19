@@ -955,6 +955,10 @@ string close_drawer
 string close_sheet
 string collapsed
 string coming_soon
+string data_export
+string data_import
+string data_management
+string data_sample
 string date_input_headline
 string date_input_headline_description
 string date_input_invalid_for_pattern
@@ -994,6 +998,8 @@ string dropdown_menu
 string edit
 string end
 string expanded
+string export_error
+string export_success
 string filter_all
 string game_belote_desc
 string game_darts_desc
@@ -1012,6 +1018,8 @@ string home_new_game
 string home_players
 string home_score_manager
 string home_select_game
+string import_error
+string import_success
 string in_progress
 string indeterminate
 string kpi_all_games
@@ -1076,6 +1084,8 @@ string profile_zero_rate_desc
 string pts
 string range_end
 string range_start
+string sample_error
+string sample_loaded
 string save
 string score_end_confirm
 string score_end_game

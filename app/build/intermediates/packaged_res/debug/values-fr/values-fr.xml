@@ -4,9 +4,15 @@
     <string name="back">Retour</string>
     <string name="cancel">Annuler</string>
     <string name="coming_soon">Bientôt</string>
+    <string name="data_export">Exporter</string>
+    <string name="data_import">Importer</string>
+    <string name="data_management">Données</string>
+    <string name="data_sample">Exemple</string>
     <string name="delete">Supprimer</string>
     <string name="edit">Modifier</string>
     <string name="end">Terminer</string>
+    <string name="export_error">Erreur export : %1$s</string>
+    <string name="export_success">Base exportée</string>
     <string name="filter_all">Tout</string>
     <string name="game_belote_desc">Bientôt disponible</string>
     <string name="game_darts_desc">Bientôt disponible</string>
@@ -19,12 +25,14 @@
     <string name="history_item">%1$d manches  %2$d joueurs</string>
     <string name="history_title">Historique des parties</string>
     <string name="home_button">Accueil</string>
-    <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_by_author">by RocalL</string>
     <string name="home_history">Historique</string>
     <string name="home_new_game">Nouvelle partie</string>
     <string name="home_players">Joueurs</string>
     <string name="home_score_manager">Gestionnaire de scores</string>
     <string name="home_select_game">Choisir un jeu</string>
+    <string name="import_error">Erreur import : %1$s</string>
+    <string name="import_success">Base importée</string>
     <string name="kpi_all_games">Toutes les parties</string>
     <string name="kpi_avg_pts">Pts moyens</string>
     <string name="kpi_games">Parties</string>
@@ -80,6 +88,8 @@
     <string name="profile_zero_rate">Taux de ZERO</string>
     <string name="profile_zero_rate_desc">Taux de ZERO = ZERO obtenus / manches jouées (%1$d total)</string>
     <string name="pts">pts</string>
+    <string name="sample_error">Erreur exemple : %1$s</string>
+    <string name="sample_loaded">Données exemple chargées</string>
     <string name="save">Sauvegarder</string>
     <string name="score_end_confirm">Êtes-vous sûr de vouloir terminer la partie en cours ?</string>
     <string name="score_end_game">Terminer la partie</string>

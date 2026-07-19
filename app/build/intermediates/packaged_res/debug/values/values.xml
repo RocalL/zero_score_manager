@@ -5,9 +5,15 @@
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
     <string name="coming_soon">Coming soon</string>
+    <string name="data_export">Export</string>
+    <string name="data_import">Import</string>
+    <string name="data_management">Data</string>
+    <string name="data_sample">Sample</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="end">End</string>
+    <string name="export_error">Export failed: %1$s</string>
+    <string name="export_success">Database exported</string>
     <string name="filter_all">All</string>
     <string name="game_belote_desc">Coming soon</string>
     <string name="game_darts_desc">Coming soon</string>
@@ -20,12 +26,14 @@
     <string name="history_item">%1$d rounds  %2$d players</string>
     <string name="history_title">Game History</string>
     <string name="home_button">Home</string>
-    <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_by_author">by RocalL</string>
     <string name="home_history">History</string>
     <string name="home_new_game">New Game</string>
     <string name="home_players">Players</string>
     <string name="home_score_manager">Score Manager</string>
     <string name="home_select_game">Select a game</string>
+    <string name="import_error">Import failed: %1$s</string>
+    <string name="import_success">Database imported</string>
     <string name="kpi_all_games">All Games</string>
     <string name="kpi_avg_pts">Avg Pts</string>
     <string name="kpi_games">Games</string>
@@ -81,6 +89,8 @@
     <string name="profile_zero_rate">ZERO Rate</string>
     <string name="profile_zero_rate_desc">ZERO Rate = ZEROs achieved / rounds played (%1$d total)</string>
     <string name="pts">pts</string>
+    <string name="sample_error">Sample error: %1$s</string>
+    <string name="sample_loaded">Sample data loaded</string>
     <string name="save">Save</string>
     <string name="score_end_confirm">Are you sure you want to end the current game?</string>
     <string name="score_end_game">End Game</string>

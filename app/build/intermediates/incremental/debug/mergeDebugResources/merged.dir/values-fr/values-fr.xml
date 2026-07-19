@@ -45,6 +45,10 @@
     <string msgid="7573152094250666567" name="close_sheet">"Fermer la feuille"</string>
     <string msgid="5389587048670450460" name="collapsed">"Réduit"</string>
     <string name="coming_soon">Bientôt</string>
+    <string name="data_export">Exporter</string>
+    <string name="data_import">Importer</string>
+    <string name="data_management">Données</string>
+    <string name="data_sample">Exemple</string>
     <string msgid="3499643850558715142" name="date_input_headline">"Date saisie"</string>
     <string msgid="8562356184193964298" name="date_input_headline_description">"Date saisie : %1$s"</string>
     <string msgid="5281836720766682161" name="date_input_invalid_for_pattern">"La date ne correspond pas au format attendu : %1$s"</string>
@@ -84,6 +88,8 @@
     <string name="edit">Modifier</string>
     <string name="end">Terminer</string>
     <string msgid="5974471714631304645" name="expanded">"Développé"</string>
+    <string name="export_error">Erreur export : %1$s</string>
+    <string name="export_success">Base exportée</string>
     <string name="filter_all">Tout</string>
     <string name="game_belote_desc">Bientôt disponible</string>
     <string name="game_darts_desc">Bientôt disponible</string>
@@ -96,12 +102,14 @@
     <string name="history_item">%1$d manches  %2$d joueurs</string>
     <string name="history_title">Historique des parties</string>
     <string name="home_button">Accueil</string>
-    <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_by_author">by RocalL</string>
     <string name="home_history">Historique</string>
     <string name="home_new_game">Nouvelle partie</string>
     <string name="home_players">Joueurs</string>
     <string name="home_score_manager">Gestionnaire de scores</string>
     <string name="home_select_game">Choisir un jeu</string>
+    <string name="import_error">Erreur import : %1$s</string>
+    <string name="import_success">Base importée</string>
     <string msgid="6827826412747255547" name="in_progress">"En cours"</string>
     <string msgid="7933458017204019916" name="indeterminate">"Partiellement coché"</string>
     <string name="kpi_all_games">Toutes les parties</string>
@@ -165,6 +173,8 @@
     <string name="pts">pts</string>
     <string msgid="5941395253238309765" name="range_end">"Fin de plage"</string>
     <string msgid="7097486360902471446" name="range_start">"Début de plage"</string>
+    <string name="sample_error">Erreur exemple : %1$s</string>
+    <string name="sample_loaded">Données exemple chargées</string>
     <string name="save">Sauvegarder</string>
     <string name="score_end_confirm">Êtes-vous sûr de vouloir terminer la partie en cours ?</string>
     <string name="score_end_game">Terminer la partie</string>

@@ -6,7 +6,7 @@
     <string name="home_new_game">Nouvelle partie</string>
     <string name="home_players">Joueurs</string>
     <string name="home_history">Historique</string>
-    <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_by_author">by RocalL</string>
     <string name="home_select_game">Choisir un jeu</string>
 
     <!-- Game Descriptions -->
@@ -125,6 +125,18 @@
     <string name="kpi_avg_pts">Pts moyens</string>
     <string name="kpi_total_pts">Pts totaux</string>
     <string name="profile_no_games">Aucune partie jouée</string>
+
+    <!-- Data Management -->
+    <string name="data_management">Données</string>
+    <string name="data_export">Exporter</string>
+    <string name="data_import">Importer</string>
+    <string name="data_sample">Exemple</string>
+    <string name="export_success">Base exportée</string>
+    <string name="export_error">Erreur export : %1$s</string>
+    <string name="import_success">Base importée</string>
+    <string name="import_error">Erreur import : %1$s</string>
+    <string name="sample_loaded">Données exemple chargées</string>
+    <string name="sample_error">Erreur exemple : %1$s</string>
 
     <!-- Language -->
     <string name="language_en">EN</string>

@@ -1,5 +1,8 @@
 package com.zerogame.ui.screens
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,7 +30,11 @@ import com.zerogame.data.model.GameType
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
+import com.zerogame.util.DatabaseExporter
+import com.zerogame.util.DatabaseImporter
 import com.zerogame.util.LocaleHelper
+import com.zerogame.util.SampleData
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -35,6 +43,39 @@ fun HomeScreen(
     onViewHistory: () -> Unit,
     onViewProfile: (Long) -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let {
+            scope.launch {
+                try {
+                    DatabaseExporter.exportToFile(context, it)
+                    Toast.makeText(context, context.getString(R.string.export_success), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, context.getString(R.string.export_error, e.message), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            scope.launch {
+                try {
+                    DatabaseImporter.importFromFile(context, it)
+                    Toast.makeText(context, context.getString(R.string.import_success), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, context.getString(R.string.import_error, e.message), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
@@ -157,7 +198,52 @@ fun HomeScreen(
 
             LanguageToggle()
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Data management section
+            Text(
+                text = stringResource(R.string.data_management),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                DataActionChip(
+                    icon = Icons.Default.Upload,
+                    label = stringResource(R.string.data_export),
+                    modifier = Modifier.weight(1f),
+                    onClick = { exportLauncher.launch("zero_score_backup.json") }
+                )
+                DataActionChip(
+                    icon = Icons.Default.Download,
+                    label = stringResource(R.string.data_import),
+                    modifier = Modifier.weight(1f),
+                    onClick = { importLauncher.launch(arrayOf("application/json")) }
+                )
+                DataActionChip(
+                    icon = Icons.Default.Science,
+                    label = stringResource(R.string.data_sample),
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        scope.launch {
+                            try {
+                                SampleData.load(context)
+                                Toast.makeText(context, context.getString(R.string.sample_loaded), Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                Toast.makeText(context, context.getString(R.string.sample_error, e.message), Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(R.string.home_by_author),
@@ -287,8 +373,45 @@ fun ActionChip(
 }
 
 @Composable
+fun DataActionChip(
+    icon: ImageVector,
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = Purple,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
 fun LanguageToggle() {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val currentCode = remember { mutableStateOf(LocaleHelper.getSavedLocale(context)) }
     val isFrench = currentCode.value == "fr"
 
