@@ -24,8 +24,8 @@ interface GamePlayerDao {
     @Update
     suspend fun updateGamePlayer(gamePlayer: GamePlayer)
 
-    @Query("UPDATE game_players SET totalScore = totalScore + :score, roundsPlayed = roundsPlayed + 1, zerosAchieved = zerosAchieved + CASE WHEN :achievedZero THEN 1 ELSE 0 END WHERE gameId = :gameId AND playerId = :playerId")
-    suspend fun updateScore(gameId: Long, playerId: Long, score: Int, achievedZero: Boolean)
+    @Query("UPDATE game_players SET totalScore = totalScore + :score, roundsPlayed = roundsPlayed + 1 WHERE gameId = :gameId AND playerId = :playerId")
+    suspend fun updateScore(gameId: Long, playerId: Long, score: Int)
 
     @Query("SELECT * FROM game_players WHERE gameId = :gameId ORDER BY totalScore ASC LIMIT 1")
     suspend fun getWinner(gameId: Long): GamePlayer?

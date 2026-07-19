@@ -9,7 +9,7 @@ data class PlayerWithScore(
     val player: Player,
     val totalScore: Int,
     val roundsPlayed: Int,
-    val zerosAchieved: Int
+    val extras: Map<String, String> = emptyMap()
 )
 
 data class PlayerStats(

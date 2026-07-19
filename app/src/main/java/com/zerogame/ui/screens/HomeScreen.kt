@@ -3,8 +3,10 @@ package com.zerogame.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,15 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zerogame.R
+import com.zerogame.data.model.GameType
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
 import com.zerogame.util.LocaleHelper
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onStartGame: () -> Unit,
+    onStartGame: (GameType) -> Unit,
     onManagePlayers: () -> Unit,
     onViewHistory: () -> Unit,
     onViewProfile: (Long) -> Unit
@@ -40,7 +42,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(64.dp))
@@ -49,9 +52,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(colors = listOf(Lime, Pink))
-                    ),
+                    .background(Brush.linearGradient(colors = listOf(Lime, Pink))),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -65,11 +66,11 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "ZERO",
-                fontSize = 40.sp,
+                text = "ZERO SCORE",
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.onBackground,
-                letterSpacing = 8.sp
+                letterSpacing = 4.sp
             )
             Text(
                 text = stringResource(R.string.home_score_manager),
@@ -78,45 +79,209 @@ fun HomeScreen(
                 letterSpacing = 2.sp
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            HomeButton(
-                icon = Icons.Default.PlayArrow,
-                label = stringResource(R.string.home_new_game),
-                gradient = Brush.linearGradient(colors = listOf(Lime, Color(0xFFA8E600))),
-                onClick = onStartGame
+            Text(
+                text = stringResource(R.string.home_select_game),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            HomeButton(
-                icon = Icons.Default.People,
-                label = stringResource(R.string.home_players),
-                gradient = Brush.linearGradient(colors = listOf(Purple, Pink)),
-                onClick = onManagePlayers
+            GameCard(
+                title = "Zero",
+                subtitle = stringResource(R.string.game_zero_desc),
+                icon = Icons.Default.CreditCard,
+                gradient = Brush.linearGradient(listOf(Lime, Color(0xFFA8E600))),
+                onClick = { onStartGame(GameType.ZERO) }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            HomeButton(
-                icon = Icons.Default.History,
-                label = stringResource(R.string.home_history),
-                gradient = Brush.linearGradient(colors = listOf(Pink, Purple)),
-                onClick = onViewHistory
+            GameCard(
+                title = "Skyjo",
+                subtitle = stringResource(R.string.game_skyjo_desc),
+                icon = Icons.Default.GridView,
+                gradient = Brush.linearGradient(listOf(Purple, Pink)),
+                onClick = { onStartGame(GameType.SKYJO) }
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            GameCard(
+                title = "Belote",
+                subtitle = stringResource(R.string.game_belote_desc),
+                icon = Icons.Default.Style,
+                gradient = Brush.linearGradient(listOf(Pink, Purple.copy(alpha = 0.7f))),
+                onClick = { },
+                enabled = false
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            GameCard(
+                title = "Darts",
+                subtitle = stringResource(R.string.game_darts_desc),
+                icon = Icons.Default.CenterFocusStrong,
+                gradient = Brush.linearGradient(listOf(Color.Gray, Color.DarkGray)),
+                onClick = { },
+                enabled = false
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                ActionChip(
+                    icon = Icons.Default.People,
+                    label = stringResource(R.string.home_players),
+                    gradient = Brush.linearGradient(listOf(Purple, Pink)),
+                    modifier = Modifier.weight(1f),
+                    onClick = onManagePlayers
+                )
+                ActionChip(
+                    icon = Icons.Default.History,
+                    label = stringResource(R.string.home_history),
+                    gradient = Brush.linearGradient(listOf(Pink, Purple)),
+                    modifier = Modifier.weight(1f),
+                    onClick = onViewHistory
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             LanguageToggle()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = stringResource(R.string.home_by_author),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+fun GameCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    gradient: Brush,
+    onClick: () -> Unit,
+    enabled: Boolean = true
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .then(if (enabled) Modifier.clickable { onClick() } else Modifier),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (enabled) MaterialTheme.colorScheme.surfaceVariant
+            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(if (enabled) gradient else Brush.linearGradient(listOf(Color.Gray, Color.DarkGray))),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                )
+            }
+            if (enabled) {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.outline
+                )
+            } else {
+                Text(
+                    stringResource(R.string.coming_soon),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ActionChip(
+    icon: ImageVector,
+    label: String,
+    gradient: Brush,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(gradient),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
@@ -173,57 +338,5 @@ private fun LanguageChip(
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
             color = if (selected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
         )
-    }
-}
-
-@Composable
-fun HomeButton(
-    icon: ImageVector,
-    label: String,
-    gradient: Brush,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .clickable { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(gradient),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.background,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline
-            )
-        }
     }
 }

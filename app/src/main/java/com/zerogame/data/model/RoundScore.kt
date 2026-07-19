@@ -28,5 +28,5 @@ data class RoundScore(
     val playerId: Long,
     val roundNumber: Int,
     val score: Int,
-    val achievedZero: Boolean = false
+    val extras: Map<String, String> = emptyMap()
 )

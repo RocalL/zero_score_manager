@@ -17,6 +17,8 @@ import com.zerogame.data.dao.GamePlayerDao;
 import com.zerogame.data.dao.GamePlayerDao_Impl;
 import com.zerogame.data.dao.PlayerDao;
 import com.zerogame.data.dao.PlayerDao_Impl;
+import com.zerogame.data.dao.PlayerGameKpiDao;
+import com.zerogame.data.dao.PlayerGameKpiDao_Impl;
 import com.zerogame.data.dao.RoundScoreDao;
 import com.zerogame.data.dao.RoundScoreDao_Impl;
 import java.lang.Class;
@@ -43,18 +45,21 @@ public final class AppDatabase_Impl extends AppDatabase {
 
   private volatile RoundScoreDao _roundScoreDao;
 
+  private volatile PlayerGameKpiDao _playerGameKpiDao;
+
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(3) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `players` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `createdAt` INTEGER NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `games` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `createdAt` INTEGER NOT NULL, `numberOfRounds` INTEGER NOT NULL, `isFinished` INTEGER NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `game_players` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameId` INTEGER NOT NULL, `playerId` INTEGER NOT NULL, `totalScore` INTEGER NOT NULL, `roundsPlayed` INTEGER NOT NULL, `zerosAchieved` INTEGER NOT NULL, FOREIGN KEY(`gameId`) REFERENCES `games`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `round_scores` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameId` INTEGER NOT NULL, `playerId` INTEGER NOT NULL, `roundNumber` INTEGER NOT NULL, `score` INTEGER NOT NULL, `achievedZero` INTEGER NOT NULL, FOREIGN KEY(`gameId`) REFERENCES `games`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `games` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameType` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `numberOfRounds` INTEGER NOT NULL, `isFinished` INTEGER NOT NULL, `config` TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `game_players` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameId` INTEGER NOT NULL, `playerId` INTEGER NOT NULL, `totalScore` INTEGER NOT NULL, `roundsPlayed` INTEGER NOT NULL, `extras` TEXT NOT NULL, FOREIGN KEY(`gameId`) REFERENCES `games`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `round_scores` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameId` INTEGER NOT NULL, `playerId` INTEGER NOT NULL, `roundNumber` INTEGER NOT NULL, `score` INTEGER NOT NULL, `extras` TEXT NOT NULL, FOREIGN KEY(`gameId`) REFERENCES `games`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `players`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `player_game_kpis` (`playerId` INTEGER NOT NULL, `gameType` TEXT NOT NULL, `totalGames` INTEGER NOT NULL, `totalWins` INTEGER NOT NULL, `winRate` REAL NOT NULL, `currentWinStreak` INTEGER NOT NULL, `maxWinStreak` INTEGER NOT NULL, `totalPoints` INTEGER NOT NULL, `averagePoints` REAL NOT NULL, `totalZeros` INTEGER NOT NULL, `triggerCount` INTEGER NOT NULL, PRIMARY KEY(`playerId`, `gameType`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b276f54d27e77287c0c9ee1444263b3a')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4691aa2c74e8548cd02a5c99181ea7b')");
       }
 
       @Override
@@ -63,6 +68,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         db.execSQL("DROP TABLE IF EXISTS `games`");
         db.execSQL("DROP TABLE IF EXISTS `game_players`");
         db.execSQL("DROP TABLE IF EXISTS `round_scores`");
+        db.execSQL("DROP TABLE IF EXISTS `player_game_kpis`");
         final List<? extends RoomDatabase.Callback> _callbacks = mCallbacks;
         if (_callbacks != null) {
           for (RoomDatabase.Callback _callback : _callbacks) {
@@ -120,11 +126,13 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoPlayers + "\n"
                   + " Found:\n" + _existingPlayers);
         }
-        final HashMap<String, TableInfo.Column> _columnsGames = new HashMap<String, TableInfo.Column>(4);
+        final HashMap<String, TableInfo.Column> _columnsGames = new HashMap<String, TableInfo.Column>(6);
         _columnsGames.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsGames.put("gameType", new TableInfo.Column("gameType", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGames.put("createdAt", new TableInfo.Column("createdAt", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGames.put("numberOfRounds", new TableInfo.Column("numberOfRounds", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGames.put("isFinished", new TableInfo.Column("isFinished", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsGames.put("config", new TableInfo.Column("config", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysGames = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesGames = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoGames = new TableInfo("games", _columnsGames, _foreignKeysGames, _indicesGames);
@@ -140,7 +148,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         _columnsGamePlayers.put("playerId", new TableInfo.Column("playerId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGamePlayers.put("totalScore", new TableInfo.Column("totalScore", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsGamePlayers.put("roundsPlayed", new TableInfo.Column("roundsPlayed", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsGamePlayers.put("zerosAchieved", new TableInfo.Column("zerosAchieved", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsGamePlayers.put("extras", new TableInfo.Column("extras", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysGamePlayers = new HashSet<TableInfo.ForeignKey>(2);
         _foreignKeysGamePlayers.add(new TableInfo.ForeignKey("games", "CASCADE", "NO ACTION", Arrays.asList("gameId"), Arrays.asList("id")));
         _foreignKeysGamePlayers.add(new TableInfo.ForeignKey("players", "CASCADE", "NO ACTION", Arrays.asList("playerId"), Arrays.asList("id")));
@@ -158,7 +166,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         _columnsRoundScores.put("playerId", new TableInfo.Column("playerId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsRoundScores.put("roundNumber", new TableInfo.Column("roundNumber", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsRoundScores.put("score", new TableInfo.Column("score", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsRoundScores.put("achievedZero", new TableInfo.Column("achievedZero", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRoundScores.put("extras", new TableInfo.Column("extras", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysRoundScores = new HashSet<TableInfo.ForeignKey>(2);
         _foreignKeysRoundScores.add(new TableInfo.ForeignKey("games", "CASCADE", "NO ACTION", Arrays.asList("gameId"), Arrays.asList("id")));
         _foreignKeysRoundScores.add(new TableInfo.ForeignKey("players", "CASCADE", "NO ACTION", Arrays.asList("playerId"), Arrays.asList("id")));
@@ -170,9 +178,30 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoRoundScores + "\n"
                   + " Found:\n" + _existingRoundScores);
         }
+        final HashMap<String, TableInfo.Column> _columnsPlayerGameKpis = new HashMap<String, TableInfo.Column>(11);
+        _columnsPlayerGameKpis.put("playerId", new TableInfo.Column("playerId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("gameType", new TableInfo.Column("gameType", "TEXT", true, 2, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("totalGames", new TableInfo.Column("totalGames", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("totalWins", new TableInfo.Column("totalWins", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("winRate", new TableInfo.Column("winRate", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("currentWinStreak", new TableInfo.Column("currentWinStreak", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("maxWinStreak", new TableInfo.Column("maxWinStreak", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("totalPoints", new TableInfo.Column("totalPoints", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("averagePoints", new TableInfo.Column("averagePoints", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("totalZeros", new TableInfo.Column("totalZeros", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsPlayerGameKpis.put("triggerCount", new TableInfo.Column("triggerCount", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysPlayerGameKpis = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesPlayerGameKpis = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoPlayerGameKpis = new TableInfo("player_game_kpis", _columnsPlayerGameKpis, _foreignKeysPlayerGameKpis, _indicesPlayerGameKpis);
+        final TableInfo _existingPlayerGameKpis = TableInfo.read(db, "player_game_kpis");
+        if (!_infoPlayerGameKpis.equals(_existingPlayerGameKpis)) {
+          return new RoomOpenHelper.ValidationResult(false, "player_game_kpis(com.zerogame.data.model.PlayerGameKpi).\n"
+                  + " Expected:\n" + _infoPlayerGameKpis + "\n"
+                  + " Found:\n" + _existingPlayerGameKpis);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "b276f54d27e77287c0c9ee1444263b3a", "45684094dc49bd03da7dbf98434b1faf");
+    }, "d4691aa2c74e8548cd02a5c99181ea7b", "7387a2e3f8f7fd0be3711c3b84a75325");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
@@ -183,7 +212,7 @@ public final class AppDatabase_Impl extends AppDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     final HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "players","games","game_players","round_scores");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "players","games","game_players","round_scores","player_game_kpis");
   }
 
   @Override
@@ -203,6 +232,7 @@ public final class AppDatabase_Impl extends AppDatabase {
       _db.execSQL("DELETE FROM `games`");
       _db.execSQL("DELETE FROM `game_players`");
       _db.execSQL("DELETE FROM `round_scores`");
+      _db.execSQL("DELETE FROM `player_game_kpis`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -224,6 +254,7 @@ public final class AppDatabase_Impl extends AppDatabase {
     _typeConvertersMap.put(GameDao.class, GameDao_Impl.getRequiredConverters());
     _typeConvertersMap.put(GamePlayerDao.class, GamePlayerDao_Impl.getRequiredConverters());
     _typeConvertersMap.put(RoundScoreDao.class, RoundScoreDao_Impl.getRequiredConverters());
+    _typeConvertersMap.put(PlayerGameKpiDao.class, PlayerGameKpiDao_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -294,6 +325,20 @@ public final class AppDatabase_Impl extends AppDatabase {
           _roundScoreDao = new RoundScoreDao_Impl(this);
         }
         return _roundScoreDao;
+      }
+    }
+  }
+
+  @Override
+  public PlayerGameKpiDao playerGameKpiDao() {
+    if (_playerGameKpiDao != null) {
+      return _playerGameKpiDao;
+    } else {
+      synchronized(this) {
+        if(_playerGameKpiDao == null) {
+          _playerGameKpiDao = new PlayerGameKpiDao_Impl(this);
+        }
+        return _playerGameKpiDao;
       }
     }
   }

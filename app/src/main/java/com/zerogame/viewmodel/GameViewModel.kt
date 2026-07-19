@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.zerogame.ZeroApp
 import com.zerogame.data.model.Game
 import com.zerogame.data.model.GamePlayer
+import com.zerogame.data.model.GameType
 import com.zerogame.data.model.Player
 import com.zerogame.data.model.RoundScore
+import com.zerogame.game.KpiComputer
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -65,7 +67,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun startGame() {
         viewModelScope.launch {
-            val game = Game()
+            val game = Game(gameType = GameType.ZERO)
             val gameId = repository.insertGame(game)
             repository.addPlayersToGame(gameId, _selectedPlayerIds.value)
             _currentGameId.value = gameId
@@ -99,10 +101,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 playerId to score
             }
 
-            repository.addRoundScores(gameId, round, scoreList, _zeros.value.toList())
+            val extrasMap = _zeros.value.associateWith { playerId ->
+                mapOf("achievedZero" to "true")
+            }
+            repository.addRoundScores(gameId, round, scoreList, extrasMap)
+
+            for ((playerId, _) in scoreList) {
+                val gp = repository.getGamePlayer(gameId, playerId)
+                val currentZeros = gp?.extras?.get("zerosAchieved")?.toIntOrNull() ?: 0
+                val newZeros = if (playerId in _zeros.value) currentZeros + 1 else currentZeros
+                repository.updateGamePlayerExtras(gameId, playerId, mapOf("zerosAchieved" to newZeros.toString()))
+            }
 
             if (round >= totalRounds) {
                 repository.finishGame(gameId, totalRounds)
+                recomputeKpis(gameId)
                 _lastFinishedGameId.value = gameId
                 _gameFinished.value = true
             } else {
@@ -120,8 +133,29 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             if (roundsPlayed > 0) {
                 repository.finishGame(gameId, roundsPlayed)
             }
+            recomputeKpis(gameId)
             _lastFinishedGameId.value = gameId
             _gameFinished.value = true
+        }
+    }
+
+    private suspend fun recomputeKpis(gameId: Long) {
+        val game = repository.getGameById(gameId) ?: return
+        val playerIds = repository.getGamePlayersByGameIdSync(gameId).map { it.playerId }
+
+        val allGamesOfType = repository.getGamesByTypeSync(game.gameType)
+        val allGpsOfType = repository.getGamePlayersByGameIdForType(game.gameType)
+
+        for (playerId in playerIds) {
+            val kpi = KpiComputer.computeAfterGame(
+                playerId = playerId,
+                gameType = game.gameType,
+                finishedGame = game,
+                allGamePlayersInGame = repository.getGamePlayersByGameIdSync(gameId),
+                allGamesOfType = allGamesOfType,
+                allGamePlayersOfType = allGpsOfType
+            )
+            repository.upsertKpi(kpi)
         }
     }
 

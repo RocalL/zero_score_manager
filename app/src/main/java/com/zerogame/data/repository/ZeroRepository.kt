@@ -3,6 +3,7 @@ package com.zerogame.data.repository
 import com.zerogame.data.dao.GameDao
 import com.zerogame.data.dao.GamePlayerDao
 import com.zerogame.data.dao.PlayerDao
+import com.zerogame.data.dao.PlayerGameKpiDao
 import com.zerogame.data.dao.RoundScoreDao
 import com.zerogame.data.model.*
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,8 @@ class ZeroRepository(
     private val playerDao: PlayerDao,
     private val gameDao: GameDao,
     private val gamePlayerDao: GamePlayerDao,
-    private val roundScoreDao: RoundScoreDao
+    private val roundScoreDao: RoundScoreDao,
+    private val playerGameKpiDao: PlayerGameKpiDao
 ) {
     // Player operations
     fun getAllPlayers(): Flow<List<Player>> = playerDao.getAllPlayers()
@@ -29,9 +31,11 @@ class ZeroRepository(
     // Game operations
     fun getAllGames(): Flow<List<Game>> = gameDao.getAllGames()
 
+    fun getGamesByType(gameType: GameType): Flow<List<Game>> = gameDao.getGamesByType(gameType)
+
     suspend fun getGameById(id: Long): Game? = gameDao.getGameById(id)
 
-    fun getGameByIdFlow(id: Long): Flow<Game?> = gameDao.getGameByIdFlow(id)
+    fun getGameByIdFlow(id: Long): Flow<Game?> = gameDao.getGameByIdFlow(gameId = id)
 
     suspend fun insertGame(game: Game): Long = gameDao.insertGame(game)
 
@@ -58,8 +62,13 @@ class ZeroRepository(
         gamePlayerDao.insertGamePlayers(gamePlayers)
     }
 
-    suspend fun updateGamePlayerScore(gameId: Long, playerId: Long, score: Int, achievedZero: Boolean) {
-        gamePlayerDao.updateScore(gameId, playerId, score, achievedZero)
+    suspend fun updateGamePlayerScore(gameId: Long, playerId: Long, score: Int) {
+        gamePlayerDao.updateScore(gameId, playerId, score)
+    }
+
+    suspend fun updateGamePlayerExtras(gameId: Long, playerId: Long, extras: Map<String, String>) {
+        val gp = gamePlayerDao.getGamePlayer(gameId, playerId) ?: return
+        gamePlayerDao.updateGamePlayer(gp.copy(extras = extras))
     }
 
     suspend fun getGameWinner(gameId: Long): GamePlayer? = gamePlayerDao.getWinner(gameId)
@@ -73,20 +82,20 @@ class ZeroRepository(
 
     suspend fun getMaxRound(gameId: Long): Int = roundScoreDao.getMaxRound(gameId) ?: 0
 
-    suspend fun addRoundScores(gameId: Long, roundNumber: Int, scores: List<Pair<Long, Int>>, zeros: List<Long>) {
+    suspend fun addRoundScores(gameId: Long, roundNumber: Int, scores: List<Pair<Long, Int>>, extras: Map<Long, Map<String, String>> = emptyMap()) {
         val roundScores = scores.map { (playerId, score) ->
             RoundScore(
                 gameId = gameId,
                 playerId = playerId,
                 roundNumber = roundNumber,
                 score = score,
-                achievedZero = playerId in zeros
+                extras = extras[playerId] ?: emptyMap()
             )
         }
         roundScoreDao.insertRoundScores(roundScores)
 
         scores.forEach { (playerId, score) ->
-            gamePlayerDao.updateScore(gameId, playerId, score, playerId in zeros)
+            gamePlayerDao.updateScore(gameId, playerId, score)
         }
     }
 
@@ -99,4 +108,30 @@ class ZeroRepository(
 
     suspend fun getGamePlayersForGameId(gameId: Long): List<GamePlayer> =
         gamePlayerDao.getGamePlayersByGameIdSync(gameId)
+
+    // KPI operations
+    fun getKpisByPlayerId(playerId: Long): Flow<List<PlayerGameKpi>> =
+        playerGameKpiDao.getKpisByPlayerId(playerId)
+
+    suspend fun getKpi(playerId: Long, gameType: GameType): PlayerGameKpi? =
+        playerGameKpiDao.getKpi(playerId, gameType)
+
+    suspend fun upsertKpi(kpi: PlayerGameKpi) =
+        playerGameKpiDao.upsert(kpi)
+
+    suspend fun upsertAllKpis(kpis: List<PlayerGameKpi>) =
+        playerGameKpiDao.upsertAll(kpis)
+
+    // Helper for KPI computation
+    suspend fun getGamesByTypeSync(gameType: GameType): List<Game> =
+        gameDao.getGamesByTypeSync(gameType)
+
+    suspend fun getGamePlayersByGameIdForType(gameType: GameType): List<GamePlayer> {
+        val games = gameDao.getGamesByTypeSync(gameType)
+        val allGps = mutableListOf<GamePlayer>()
+        for (game in games) {
+            allGps.addAll(gamePlayerDao.getGamePlayersByGameIdSync(game.id))
+        }
+        return allGps
+    }
 }

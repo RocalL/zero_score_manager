@@ -12,6 +12,7 @@ import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import com.zerogame.data.Converters;
 import com.zerogame.data.model.RoundScore;
 import java.lang.Class;
 import java.lang.Exception;
@@ -24,6 +25,7 @@ import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
@@ -37,6 +39,8 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
 
   private final EntityInsertionAdapter<RoundScore> __insertionAdapterOfRoundScore;
 
+  private final Converters __converters = new Converters();
+
   private final SharedSQLiteStatement __preparedStmtOfDeleteRoundScoresByGameId;
 
   public RoundScoreDao_Impl(@NonNull final RoomDatabase __db) {
@@ -45,7 +49,7 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `round_scores` (`id`,`gameId`,`playerId`,`roundNumber`,`score`,`achievedZero`) VALUES (nullif(?, 0),?,?,?,?,?)";
+        return "INSERT OR ABORT INTO `round_scores` (`id`,`gameId`,`playerId`,`roundNumber`,`score`,`extras`) VALUES (nullif(?, 0),?,?,?,?,?)";
       }
 
       @Override
@@ -56,8 +60,8 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
         statement.bindLong(3, entity.getPlayerId());
         statement.bindLong(4, entity.getRoundNumber());
         statement.bindLong(5, entity.getScore());
-        final int _tmp = entity.getAchievedZero() ? 1 : 0;
-        statement.bindLong(6, _tmp);
+        final String _tmp = __converters.fromExtrasMap(entity.getExtras());
+        statement.bindString(6, _tmp);
       }
     };
     this.__preparedStmtOfDeleteRoundScoresByGameId = new SharedSQLiteStatement(__db) {
@@ -151,7 +155,7 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfRoundNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "roundNumber");
           final int _cursorIndexOfScore = CursorUtil.getColumnIndexOrThrow(_cursor, "score");
-          final int _cursorIndexOfAchievedZero = CursorUtil.getColumnIndexOrThrow(_cursor, "achievedZero");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<RoundScore> _result = new ArrayList<RoundScore>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final RoundScore _item;
@@ -165,11 +169,11 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
             _tmpRoundNumber = _cursor.getInt(_cursorIndexOfRoundNumber);
             final int _tmpScore;
             _tmpScore = _cursor.getInt(_cursorIndexOfScore);
-            final boolean _tmpAchievedZero;
-            final int _tmp;
-            _tmp = _cursor.getInt(_cursorIndexOfAchievedZero);
-            _tmpAchievedZero = _tmp != 0;
-            _item = new RoundScore(_tmpId,_tmpGameId,_tmpPlayerId,_tmpRoundNumber,_tmpScore,_tmpAchievedZero);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new RoundScore(_tmpId,_tmpGameId,_tmpPlayerId,_tmpRoundNumber,_tmpScore,_tmpExtras);
             _result.add(_item);
           }
           return _result;
@@ -205,7 +209,7 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfRoundNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "roundNumber");
           final int _cursorIndexOfScore = CursorUtil.getColumnIndexOrThrow(_cursor, "score");
-          final int _cursorIndexOfAchievedZero = CursorUtil.getColumnIndexOrThrow(_cursor, "achievedZero");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<RoundScore> _result = new ArrayList<RoundScore>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final RoundScore _item;
@@ -219,11 +223,11 @@ public final class RoundScoreDao_Impl implements RoundScoreDao {
             _tmpRoundNumber = _cursor.getInt(_cursorIndexOfRoundNumber);
             final int _tmpScore;
             _tmpScore = _cursor.getInt(_cursorIndexOfScore);
-            final boolean _tmpAchievedZero;
-            final int _tmp;
-            _tmp = _cursor.getInt(_cursorIndexOfAchievedZero);
-            _tmpAchievedZero = _tmp != 0;
-            _item = new RoundScore(_tmpId,_tmpGameId,_tmpPlayerId,_tmpRoundNumber,_tmpScore,_tmpAchievedZero);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new RoundScore(_tmpId,_tmpGameId,_tmpPlayerId,_tmpRoundNumber,_tmpScore,_tmpExtras);
             _result.add(_item);
           }
           return _result;

@@ -7,24 +7,28 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.zerogame.data.model.GameType
 import com.zerogame.ui.screens.*
-import com.zerogame.viewmodel.GameHistoryViewModel
-import com.zerogame.viewmodel.GameViewModel
-import com.zerogame.viewmodel.PlayerProfileViewModel
-import com.zerogame.viewmodel.PlayersViewModel
+import com.zerogame.viewmodel.*
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
     playersViewModel: PlayersViewModel = viewModel(),
     gameViewModel: GameViewModel = viewModel(),
+    skyjoGameViewModel: SkyjoGameViewModel = viewModel(),
     gameHistoryViewModel: GameHistoryViewModel = viewModel(),
     playerProfileViewModel: PlayerProfileViewModel = viewModel()
 ) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(
-                onStartGame = { navController.navigate("new_game") },
+                onStartGame = { gameType ->
+                    when (gameType) {
+                        GameType.ZERO -> navController.navigate("zero_new_game")
+                        GameType.SKYJO -> navController.navigate("skyjo_new_game")
+                    }
+                },
                 onManagePlayers = { navController.navigate("players") },
                 onViewHistory = { navController.navigate("history") },
                 onViewProfile = { navController.navigate("profile/$it") }
@@ -39,11 +43,12 @@ fun NavGraph(
             )
         }
 
-        composable("new_game") {
+        // Zero game flow
+        composable("zero_new_game") {
             NewGameScreen(
                 viewModel = gameViewModel,
                 onStartGame = {
-                    navController.navigate("score_entry") {
+                    navController.navigate("zero_score_entry") {
                         popUpTo("home")
                     }
                 },
@@ -51,18 +56,60 @@ fun NavGraph(
             )
         }
 
-        composable("score_entry") {
+        composable("zero_score_entry") {
             ScoreEntryScreen(
                 viewModel = gameViewModel,
                 onGameFinished = {
                     navController.navigate("leaderboard") {
-                        popUpTo("new_game") { inclusive = true }
+                        popUpTo("zero_new_game") { inclusive = true }
                     }
                 },
                 onBack = { navController.popBackStack() }
             )
         }
 
+        // Skyjo game flow
+        composable("skyjo_new_game") {
+            SkyjoNewGameScreen(
+                viewModel = skyjoGameViewModel,
+                onStartGame = {
+                    navController.navigate("skyjo_score_entry") {
+                        popUpTo("home")
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("skyjo_score_entry") {
+            SkyjoScoreEntryScreen(
+                viewModel = skyjoGameViewModel,
+                onGameFinished = {
+                    navController.navigate("skyjo_leaderboard") {
+                        popUpTo("skyjo_new_game") { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("skyjo_leaderboard") {
+            SkyjoLeaderboardScreen(
+                viewModel = skyjoGameViewModel,
+                onGoHome = {
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
+                onStartNewGame = {
+                    navController.navigate("skyjo_new_game") {
+                        popUpTo("home")
+                    }
+                }
+            )
+        }
+
+        // Shared
         composable("leaderboard") {
             LeaderboardScreen(
                 viewModel = gameViewModel,
@@ -72,7 +119,7 @@ fun NavGraph(
                     }
                 },
                 onStartNewGame = {
-                    navController.navigate("new_game") {
+                    navController.navigate("zero_new_game") {
                         popUpTo("home")
                     }
                 }

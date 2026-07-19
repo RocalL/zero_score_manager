@@ -28,5 +28,5 @@ data class GamePlayer(
     val playerId: Long,
     val totalScore: Int = 0,
     val roundsPlayed: Int = 0,
-    val zerosAchieved: Int = 0
+    val extras: Map<String, String> = emptyMap()
 )

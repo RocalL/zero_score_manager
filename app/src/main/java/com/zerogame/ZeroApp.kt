@@ -12,7 +12,8 @@ class ZeroApp : Application() {
             database.playerDao(),
             database.gameDao(),
             database.gamePlayerDao(),
-            database.roundScoreDao()
+            database.roundScoreDao(),
+            database.playerGameKpiDao()
         )
     }
 

@@ -4,9 +4,17 @@
     <string name="app_name">Zero Score</string>
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
+    <string name="coming_soon">Coming soon</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="end">End</string>
+    <string name="filter_all">All</string>
+    <string name="game_belote_desc">Coming soon</string>
+    <string name="game_darts_desc">Coming soon</string>
+    <string name="game_skyjo_desc">Card matching strategy</string>
+    <string name="game_type_skyjo">Skyjo</string>
+    <string name="game_type_zero">Zero</string>
+    <string name="game_zero_desc">Classic scoring with zeros</string>
     <string name="history_empty">No games yet</string>
     <string name="history_empty_hint">Start a game to see history</string>
     <string name="history_item">%1$d rounds  %2$d players</string>
@@ -17,6 +25,22 @@
     <string name="home_new_game">New Game</string>
     <string name="home_players">Players</string>
     <string name="home_score_manager">Score Manager</string>
+    <string name="home_select_game">Select a game</string>
+    <string name="kpi_all_games">All Games</string>
+    <string name="kpi_avg_pts">Avg Pts</string>
+    <string name="kpi_games">Games</string>
+    <string name="kpi_max_streak">Max Streak</string>
+    <string name="kpi_overview_all">All Games</string>
+    <string name="kpi_overview_skyjo">Skyjo Stats</string>
+    <string name="kpi_overview_zero">Zero Stats</string>
+    <string name="kpi_skyjo_stats">Skyjo</string>
+    <string name="kpi_streak">Best Streak</string>
+    <string name="kpi_total_pts">Total Pts</string>
+    <string name="kpi_triggers">Triggers</string>
+    <string name="kpi_winrate">Win Rate</string>
+    <string name="kpi_wins">Wins</string>
+    <string name="kpi_zero_stats">Zero</string>
+    <string name="kpi_zeros">Zeros</string>
     <string name="language_en">EN</string>
     <string name="language_fr">FR</string>
     <string name="leaderboard_final_standings">Final Standings</string>
@@ -46,6 +70,7 @@
     <string name="profile_game_history">Game History</string>
     <string name="profile_game_n">Game #%1$d</string>
     <string name="profile_games">Games</string>
+    <string name="profile_no_games">No games played yet</string>
     <string name="profile_performance">Performance</string>
     <string name="profile_rounds">%1$d rounds</string>
     <string name="profile_title">Profile</string>
@@ -67,5 +92,16 @@
     <string name="score_standings">Standings</string>
     <string name="score_submit">Submit Round</string>
     <string name="score_total">Total: %1$d pts</string>
+    <string name="skyjo_cols">Cols</string>
+    <string name="skyjo_cumulative">Total: %1$d pts</string>
+    <string name="skyjo_cumulative_hint">Cumulative scores</string>
+    <string name="skyjo_cumulative_scores">Current Standings</string>
+    <string name="skyjo_enter_round_scores">Enter Round Scores</string>
+    <string name="skyjo_enter_round_scores_hint">Tap the flag to mark the trigger player</string>
+    <string name="skyjo_new_game">New Skyjo Game</string>
+    <string name="skyjo_players_hint">2 to 8 players</string>
+    <string name="skyjo_start_game">Start Game \u2014 %1$d players</string>
+    <string name="skyjo_submit_round">Submit Round</string>
+    <string name="skyjo_trigger">Trigger</string>
     <style name="Theme.ZeroGame" parent="Theme.AppCompat.Light.NoActionBar"/>
 </resources>

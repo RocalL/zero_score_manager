@@ -1,5 +1,6 @@
 package com.zerogame.ui.screens
 
+import com.zerogame.util.Quadruple
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -58,7 +59,7 @@ fun LeaderboardScreen(
             .map { (round, scores) ->
                 round to scores.map { rs ->
                     val name = playerMap[rs.playerId]?.name ?: fallbackName
-                    Quadruple(rs.playerId, name, rs.score, rs.achievedZero)
+                    Quadruple(rs.playerId, name, rs.score, rs.extras["achievedZero"] == "true")
                 }.sortedBy { it.third }
             }
     }
@@ -218,7 +219,7 @@ fun LeaderboardScreen(
             itemsIndexed(rankings) { index, (playerId, name, score) ->
                 val isWinner = index == 0
                 val isSecond = index == 1
-                val zeros = currentGamePlayers.find { it.playerId == playerId }?.zerosAchieved ?: 0
+                val zeros = currentGamePlayers.find { it.playerId == playerId }?.extras?.get("zerosAchieved")?.toIntOrNull() ?: 0
 
                 Card(
                     modifier = Modifier
@@ -383,4 +384,3 @@ fun LeaderboardScreen(
     }
 }
 
-private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

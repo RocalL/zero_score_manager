@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zerogame.R
 import com.zerogame.data.model.Game
+import com.zerogame.data.model.GameType
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
@@ -138,7 +139,11 @@ fun GameHistoryItem(
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text(dateStr, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(dateStr, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            GameTypeBadge(game.gameType)
+                        }
                         Text(stringResource(R.string.history_item, game.numberOfRounds, gamePlayers.size), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
@@ -174,8 +179,8 @@ fun GameHistoryItem(
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("${gp.totalScore} ${stringResource(R.string.pts)}", fontSize = 14.sp, fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal)
-                            if (gp.zerosAchieved > 0) {
-                                Text("  ${gp.zerosAchieved}x0", fontSize = 11.sp, color = Lime, fontWeight = FontWeight.Bold)
+                            if ((gp.extras["zerosAchieved"]?.toIntOrNull() ?: 0) > 0) {
+                                Text("  ${gp.extras["zerosAchieved"]?.toIntOrNull() ?: 0}x0", fontSize = 11.sp, color = Lime, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -192,5 +197,30 @@ fun GameHistoryItem(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun GameTypeBadge(gameType: GameType) {
+    val label = when (gameType) {
+        GameType.ZERO -> stringResource(R.string.game_type_zero)
+        GameType.SKYJO -> stringResource(R.string.game_type_skyjo)
+    }
+    val color = when (gameType) {
+        GameType.ZERO -> Purple
+        GameType.SKYJO -> Pink
+    }
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(color.copy(alpha = 0.2f))
+            .padding(horizontal = 8.dp, vertical = 2.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
     }
 }

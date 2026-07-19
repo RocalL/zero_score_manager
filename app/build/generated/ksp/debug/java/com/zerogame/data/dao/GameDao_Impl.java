@@ -13,7 +13,9 @@ import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import com.zerogame.data.Converters;
 import com.zerogame.data.model.Game;
+import com.zerogame.data.model.GameType;
 import java.lang.Class;
 import java.lang.Exception;
 import java.lang.Long;
@@ -24,6 +26,7 @@ import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
@@ -37,6 +40,8 @@ public final class GameDao_Impl implements GameDao {
 
   private final EntityInsertionAdapter<Game> __insertionAdapterOfGame;
 
+  private final Converters __converters = new Converters();
+
   private final EntityDeletionOrUpdateAdapter<Game> __deletionAdapterOfGame;
 
   private final EntityDeletionOrUpdateAdapter<Game> __updateAdapterOfGame;
@@ -49,17 +54,21 @@ public final class GameDao_Impl implements GameDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `games` (`id`,`createdAt`,`numberOfRounds`,`isFinished`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR ABORT INTO `games` (`id`,`gameType`,`createdAt`,`numberOfRounds`,`isFinished`,`config`) VALUES (nullif(?, 0),?,?,?,?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final Game entity) {
         statement.bindLong(1, entity.getId());
-        statement.bindLong(2, entity.getCreatedAt());
-        statement.bindLong(3, entity.getNumberOfRounds());
-        final int _tmp = entity.isFinished() ? 1 : 0;
-        statement.bindLong(4, _tmp);
+        final String _tmp = __converters.fromGameType(entity.getGameType());
+        statement.bindString(2, _tmp);
+        statement.bindLong(3, entity.getCreatedAt());
+        statement.bindLong(4, entity.getNumberOfRounds());
+        final int _tmp_1 = entity.isFinished() ? 1 : 0;
+        statement.bindLong(5, _tmp_1);
+        final String _tmp_2 = __converters.fromExtrasMap(entity.getConfig());
+        statement.bindString(6, _tmp_2);
       }
     };
     this.__deletionAdapterOfGame = new EntityDeletionOrUpdateAdapter<Game>(__db) {
@@ -79,18 +88,22 @@ public final class GameDao_Impl implements GameDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `games` SET `id` = ?,`createdAt` = ?,`numberOfRounds` = ?,`isFinished` = ? WHERE `id` = ?";
+        return "UPDATE OR ABORT `games` SET `id` = ?,`gameType` = ?,`createdAt` = ?,`numberOfRounds` = ?,`isFinished` = ?,`config` = ? WHERE `id` = ?";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final Game entity) {
         statement.bindLong(1, entity.getId());
-        statement.bindLong(2, entity.getCreatedAt());
-        statement.bindLong(3, entity.getNumberOfRounds());
-        final int _tmp = entity.isFinished() ? 1 : 0;
-        statement.bindLong(4, _tmp);
-        statement.bindLong(5, entity.getId());
+        final String _tmp = __converters.fromGameType(entity.getGameType());
+        statement.bindString(2, _tmp);
+        statement.bindLong(3, entity.getCreatedAt());
+        statement.bindLong(4, entity.getNumberOfRounds());
+        final int _tmp_1 = entity.isFinished() ? 1 : 0;
+        statement.bindLong(5, _tmp_1);
+        final String _tmp_2 = __converters.fromExtrasMap(entity.getConfig());
+        statement.bindString(6, _tmp_2);
+        statement.bindLong(7, entity.getId());
       }
     };
     this.__preparedStmtOfFinishGame = new SharedSQLiteStatement(__db) {
@@ -196,23 +209,33 @@ public final class GameDao_Impl implements GameDao {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfGameType = CursorUtil.getColumnIndexOrThrow(_cursor, "gameType");
           final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
           final int _cursorIndexOfNumberOfRounds = CursorUtil.getColumnIndexOrThrow(_cursor, "numberOfRounds");
           final int _cursorIndexOfIsFinished = CursorUtil.getColumnIndexOrThrow(_cursor, "isFinished");
+          final int _cursorIndexOfConfig = CursorUtil.getColumnIndexOrThrow(_cursor, "config");
           final List<Game> _result = new ArrayList<Game>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final Game _item;
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final GameType _tmpGameType;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfGameType);
+            _tmpGameType = __converters.toGameType(_tmp);
             final long _tmpCreatedAt;
             _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
             final int _tmpNumberOfRounds;
             _tmpNumberOfRounds = _cursor.getInt(_cursorIndexOfNumberOfRounds);
             final boolean _tmpIsFinished;
-            final int _tmp;
-            _tmp = _cursor.getInt(_cursorIndexOfIsFinished);
-            _tmpIsFinished = _tmp != 0;
-            _item = new Game(_tmpId,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished);
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfIsFinished);
+            _tmpIsFinished = _tmp_1 != 0;
+            final Map<String, String> _tmpConfig;
+            final String _tmp_2;
+            _tmp_2 = _cursor.getString(_cursorIndexOfConfig);
+            _tmpConfig = __converters.toExtrasMap(_tmp_2);
+            _item = new Game(_tmpId,_tmpGameType,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished,_tmpConfig);
             _result.add(_item);
           }
           return _result;
@@ -229,6 +252,116 @@ public final class GameDao_Impl implements GameDao {
   }
 
   @Override
+  public Flow<List<Game>> getGamesByType(final GameType gameType) {
+    final String _sql = "SELECT * FROM games WHERE gameType = ? ORDER BY createdAt DESC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    final String _tmp = __converters.fromGameType(gameType);
+    _statement.bindString(_argIndex, _tmp);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"games"}, new Callable<List<Game>>() {
+      @Override
+      @NonNull
+      public List<Game> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfGameType = CursorUtil.getColumnIndexOrThrow(_cursor, "gameType");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final int _cursorIndexOfNumberOfRounds = CursorUtil.getColumnIndexOrThrow(_cursor, "numberOfRounds");
+          final int _cursorIndexOfIsFinished = CursorUtil.getColumnIndexOrThrow(_cursor, "isFinished");
+          final int _cursorIndexOfConfig = CursorUtil.getColumnIndexOrThrow(_cursor, "config");
+          final List<Game> _result = new ArrayList<Game>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final Game _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final GameType _tmpGameType;
+            final String _tmp_1;
+            _tmp_1 = _cursor.getString(_cursorIndexOfGameType);
+            _tmpGameType = __converters.toGameType(_tmp_1);
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            final int _tmpNumberOfRounds;
+            _tmpNumberOfRounds = _cursor.getInt(_cursorIndexOfNumberOfRounds);
+            final boolean _tmpIsFinished;
+            final int _tmp_2;
+            _tmp_2 = _cursor.getInt(_cursorIndexOfIsFinished);
+            _tmpIsFinished = _tmp_2 != 0;
+            final Map<String, String> _tmpConfig;
+            final String _tmp_3;
+            _tmp_3 = _cursor.getString(_cursorIndexOfConfig);
+            _tmpConfig = __converters.toExtrasMap(_tmp_3);
+            _item = new Game(_tmpId,_tmpGameType,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished,_tmpConfig);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
+  public Object getGamesByTypeSync(final GameType gameType,
+      final Continuation<? super List<Game>> $completion) {
+    final String _sql = "SELECT * FROM games WHERE gameType = ? ORDER BY createdAt DESC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    final String _tmp = __converters.fromGameType(gameType);
+    _statement.bindString(_argIndex, _tmp);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<Game>>() {
+      @Override
+      @NonNull
+      public List<Game> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfGameType = CursorUtil.getColumnIndexOrThrow(_cursor, "gameType");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
+          final int _cursorIndexOfNumberOfRounds = CursorUtil.getColumnIndexOrThrow(_cursor, "numberOfRounds");
+          final int _cursorIndexOfIsFinished = CursorUtil.getColumnIndexOrThrow(_cursor, "isFinished");
+          final int _cursorIndexOfConfig = CursorUtil.getColumnIndexOrThrow(_cursor, "config");
+          final List<Game> _result = new ArrayList<Game>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final Game _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final GameType _tmpGameType;
+            final String _tmp_1;
+            _tmp_1 = _cursor.getString(_cursorIndexOfGameType);
+            _tmpGameType = __converters.toGameType(_tmp_1);
+            final long _tmpCreatedAt;
+            _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
+            final int _tmpNumberOfRounds;
+            _tmpNumberOfRounds = _cursor.getInt(_cursorIndexOfNumberOfRounds);
+            final boolean _tmpIsFinished;
+            final int _tmp_2;
+            _tmp_2 = _cursor.getInt(_cursorIndexOfIsFinished);
+            _tmpIsFinished = _tmp_2 != 0;
+            final Map<String, String> _tmpConfig;
+            final String _tmp_3;
+            _tmp_3 = _cursor.getString(_cursorIndexOfConfig);
+            _tmpConfig = __converters.toExtrasMap(_tmp_3);
+            _item = new Game(_tmpId,_tmpGameType,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished,_tmpConfig);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object getGameById(final long gameId, final Continuation<? super Game> $completion) {
     final String _sql = "SELECT * FROM games WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
@@ -242,22 +375,32 @@ public final class GameDao_Impl implements GameDao {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfGameType = CursorUtil.getColumnIndexOrThrow(_cursor, "gameType");
           final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
           final int _cursorIndexOfNumberOfRounds = CursorUtil.getColumnIndexOrThrow(_cursor, "numberOfRounds");
           final int _cursorIndexOfIsFinished = CursorUtil.getColumnIndexOrThrow(_cursor, "isFinished");
+          final int _cursorIndexOfConfig = CursorUtil.getColumnIndexOrThrow(_cursor, "config");
           final Game _result;
           if (_cursor.moveToFirst()) {
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final GameType _tmpGameType;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfGameType);
+            _tmpGameType = __converters.toGameType(_tmp);
             final long _tmpCreatedAt;
             _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
             final int _tmpNumberOfRounds;
             _tmpNumberOfRounds = _cursor.getInt(_cursorIndexOfNumberOfRounds);
             final boolean _tmpIsFinished;
-            final int _tmp;
-            _tmp = _cursor.getInt(_cursorIndexOfIsFinished);
-            _tmpIsFinished = _tmp != 0;
-            _result = new Game(_tmpId,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished);
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfIsFinished);
+            _tmpIsFinished = _tmp_1 != 0;
+            final Map<String, String> _tmpConfig;
+            final String _tmp_2;
+            _tmp_2 = _cursor.getString(_cursorIndexOfConfig);
+            _tmpConfig = __converters.toExtrasMap(_tmp_2);
+            _result = new Game(_tmpId,_tmpGameType,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished,_tmpConfig);
           } else {
             _result = null;
           }
@@ -283,22 +426,32 @@ public final class GameDao_Impl implements GameDao {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfGameType = CursorUtil.getColumnIndexOrThrow(_cursor, "gameType");
           final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "createdAt");
           final int _cursorIndexOfNumberOfRounds = CursorUtil.getColumnIndexOrThrow(_cursor, "numberOfRounds");
           final int _cursorIndexOfIsFinished = CursorUtil.getColumnIndexOrThrow(_cursor, "isFinished");
+          final int _cursorIndexOfConfig = CursorUtil.getColumnIndexOrThrow(_cursor, "config");
           final Game _result;
           if (_cursor.moveToFirst()) {
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final GameType _tmpGameType;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfGameType);
+            _tmpGameType = __converters.toGameType(_tmp);
             final long _tmpCreatedAt;
             _tmpCreatedAt = _cursor.getLong(_cursorIndexOfCreatedAt);
             final int _tmpNumberOfRounds;
             _tmpNumberOfRounds = _cursor.getInt(_cursorIndexOfNumberOfRounds);
             final boolean _tmpIsFinished;
-            final int _tmp;
-            _tmp = _cursor.getInt(_cursorIndexOfIsFinished);
-            _tmpIsFinished = _tmp != 0;
-            _result = new Game(_tmpId,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished);
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfIsFinished);
+            _tmpIsFinished = _tmp_1 != 0;
+            final Map<String, String> _tmpConfig;
+            final String _tmp_2;
+            _tmp_2 = _cursor.getString(_cursorIndexOfConfig);
+            _tmpConfig = __converters.toExtrasMap(_tmp_2);
+            _result = new Game(_tmpId,_tmpGameType,_tmpCreatedAt,_tmpNumberOfRounds,_tmpIsFinished,_tmpConfig);
           } else {
             _result = null;
           }

@@ -7,6 +7,14 @@
     <string name="home_players">Joueurs</string>
     <string name="home_history">Historique</string>
     <string name="home_by_author">by Reiner Knizia</string>
+    <string name="home_select_game">Choisir un jeu</string>
+
+    <!-- Game Descriptions -->
+    <string name="game_zero_desc">Scoring classique avec zéros</string>
+    <string name="game_skyjo_desc">Jeu de cartes stratégique</string>
+    <string name="game_belote_desc">Bientôt disponible</string>
+    <string name="game_darts_desc">Bientôt disponible</string>
+    <string name="coming_soon">Bientôt</string>
 
     <!-- Common -->
     <string name="back">Retour</string>
@@ -81,6 +89,42 @@
     <string name="period_last_5">5 dernières</string>
     <string name="period_last_10">10 dernières</string>
     <string name="period_last_50">50 dernières</string>
+
+    <!-- Skyjo -->
+    <string name="skyjo_new_game">Nouvelle partie Skyjo</string>
+    <string name="skyjo_players_hint">2 à 8 joueurs</string>
+    <string name="skyjo_start_game">Lancer la partie \u2014 %1$d joueurs</string>
+    <string name="skyjo_cumulative_hint">Scores cumulés</string>
+    <string name="skyjo_cumulative_scores">Classement actuel</string>
+    <string name="skyjo_enter_round_scores">Saisir les scores de la manche</string>
+    <string name="skyjo_enter_round_scores_hint">Appuyez sur le drapeau pour marquer le joueur déclencheur</string>
+    <string name="skyjo_cumulative">Total : %1$d pts</string>
+    <string name="skyjo_trigger">Déclencheur</string>
+    <string name="skyjo_cols">Colonnes</string>
+    <string name="skyjo_submit_round">Valider la manche</string>
+
+    <!-- Game Types & Filters -->
+    <string name="game_type_zero">Zero</string>
+    <string name="game_type_skyjo">Skyjo</string>
+    <string name="filter_all">Tout</string>
+
+    <!-- KPI Dashboard -->
+    <string name="kpi_overview_all">Toutes les parties</string>
+    <string name="kpi_overview_zero">Stats Zero</string>
+    <string name="kpi_overview_skyjo">Stats Skyjo</string>
+    <string name="kpi_all_games">Toutes les parties</string>
+    <string name="kpi_zero_stats">Zero</string>
+    <string name="kpi_skyjo_stats">Skyjo</string>
+    <string name="kpi_games">Parties</string>
+    <string name="kpi_wins">Victoires</string>
+    <string name="kpi_winrate">Taux victoire</string>
+    <string name="kpi_streak">Meilleure série</string>
+    <string name="kpi_max_streak">Série max</string>
+    <string name="kpi_zeros">Zéros</string>
+    <string name="kpi_triggers">Déclenchements</string>
+    <string name="kpi_avg_pts">Pts moyens</string>
+    <string name="kpi_total_pts">Pts totaux</string>
+    <string name="profile_no_games">Aucune partie jouée</string>
 
     <!-- Language -->
     <string name="language_en">EN</string>

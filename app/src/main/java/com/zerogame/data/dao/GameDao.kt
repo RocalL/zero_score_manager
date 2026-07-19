@@ -2,12 +2,19 @@ package com.zerogame.data.dao
 
 import androidx.room.*
 import com.zerogame.data.model.Game
+import com.zerogame.data.model.GameType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GameDao {
     @Query("SELECT * FROM games ORDER BY createdAt DESC")
     fun getAllGames(): Flow<List<Game>>
+
+    @Query("SELECT * FROM games WHERE gameType = :gameType ORDER BY createdAt DESC")
+    fun getGamesByType(gameType: GameType): Flow<List<Game>>
+
+    @Query("SELECT * FROM games WHERE gameType = :gameType ORDER BY createdAt DESC")
+    suspend fun getGamesByTypeSync(gameType: GameType): List<Game>
 
     @Query("SELECT * FROM games WHERE id = :gameId")
     suspend fun getGameById(gameId: Long): Game?

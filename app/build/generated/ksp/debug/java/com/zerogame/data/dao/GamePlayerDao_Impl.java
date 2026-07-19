@@ -13,6 +13,7 @@ import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import com.zerogame.data.Converters;
 import com.zerogame.data.model.GamePlayer;
 import java.lang.Class;
 import java.lang.Exception;
@@ -24,6 +25,7 @@ import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
@@ -37,6 +39,8 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
 
   private final EntityInsertionAdapter<GamePlayer> __insertionAdapterOfGamePlayer;
 
+  private final Converters __converters = new Converters();
+
   private final EntityDeletionOrUpdateAdapter<GamePlayer> __updateAdapterOfGamePlayer;
 
   private final SharedSQLiteStatement __preparedStmtOfUpdateScore;
@@ -47,7 +51,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `game_players` (`id`,`gameId`,`playerId`,`totalScore`,`roundsPlayed`,`zerosAchieved`) VALUES (nullif(?, 0),?,?,?,?,?)";
+        return "INSERT OR ABORT INTO `game_players` (`id`,`gameId`,`playerId`,`totalScore`,`roundsPlayed`,`extras`) VALUES (nullif(?, 0),?,?,?,?,?)";
       }
 
       @Override
@@ -58,14 +62,15 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
         statement.bindLong(3, entity.getPlayerId());
         statement.bindLong(4, entity.getTotalScore());
         statement.bindLong(5, entity.getRoundsPlayed());
-        statement.bindLong(6, entity.getZerosAchieved());
+        final String _tmp = __converters.fromExtrasMap(entity.getExtras());
+        statement.bindString(6, _tmp);
       }
     };
     this.__updateAdapterOfGamePlayer = new EntityDeletionOrUpdateAdapter<GamePlayer>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `game_players` SET `id` = ?,`gameId` = ?,`playerId` = ?,`totalScore` = ?,`roundsPlayed` = ?,`zerosAchieved` = ? WHERE `id` = ?";
+        return "UPDATE OR ABORT `game_players` SET `id` = ?,`gameId` = ?,`playerId` = ?,`totalScore` = ?,`roundsPlayed` = ?,`extras` = ? WHERE `id` = ?";
       }
 
       @Override
@@ -76,7 +81,8 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
         statement.bindLong(3, entity.getPlayerId());
         statement.bindLong(4, entity.getTotalScore());
         statement.bindLong(5, entity.getRoundsPlayed());
-        statement.bindLong(6, entity.getZerosAchieved());
+        final String _tmp = __converters.fromExtrasMap(entity.getExtras());
+        statement.bindString(6, _tmp);
         statement.bindLong(7, entity.getId());
       }
     };
@@ -84,7 +90,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
       @Override
       @NonNull
       public String createQuery() {
-        final String _query = "UPDATE game_players SET totalScore = totalScore + ?, roundsPlayed = roundsPlayed + 1, zerosAchieved = zerosAchieved + CASE WHEN ? THEN 1 ELSE 0 END WHERE gameId = ? AND playerId = ?";
+        final String _query = "UPDATE game_players SET totalScore = totalScore + ?, roundsPlayed = roundsPlayed + 1 WHERE gameId = ? AND playerId = ?";
         return _query;
       }
     };
@@ -149,7 +155,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
 
   @Override
   public Object updateScore(final long gameId, final long playerId, final int score,
-      final boolean achievedZero, final Continuation<? super Unit> $completion) {
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -158,11 +164,8 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
         int _argIndex = 1;
         _stmt.bindLong(_argIndex, score);
         _argIndex = 2;
-        final int _tmp = achievedZero ? 1 : 0;
-        _stmt.bindLong(_argIndex, _tmp);
-        _argIndex = 3;
         _stmt.bindLong(_argIndex, gameId);
-        _argIndex = 4;
+        _argIndex = 3;
         _stmt.bindLong(_argIndex, playerId);
         try {
           __db.beginTransaction();
@@ -197,7 +200,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<GamePlayer> _result = new ArrayList<GamePlayer>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final GamePlayer _item;
@@ -211,9 +214,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
             _result.add(_item);
           }
           return _result;
@@ -248,7 +253,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<GamePlayer> _result = new ArrayList<GamePlayer>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final GamePlayer _item;
@@ -262,9 +267,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
             _result.add(_item);
           }
           return _result;
@@ -297,7 +304,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final GamePlayer _result;
           if (_cursor.moveToFirst()) {
             final long _tmpId;
@@ -310,9 +317,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _result = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _result = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
           } else {
             _result = null;
           }
@@ -343,7 +352,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final GamePlayer _result;
           if (_cursor.moveToFirst()) {
             final long _tmpId;
@@ -356,9 +365,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _result = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _result = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
           } else {
             _result = null;
           }
@@ -388,7 +399,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<GamePlayer> _result = new ArrayList<GamePlayer>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final GamePlayer _item;
@@ -402,9 +413,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
             _result.add(_item);
           }
           return _result;
@@ -439,7 +452,7 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
           final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
           final int _cursorIndexOfTotalScore = CursorUtil.getColumnIndexOrThrow(_cursor, "totalScore");
           final int _cursorIndexOfRoundsPlayed = CursorUtil.getColumnIndexOrThrow(_cursor, "roundsPlayed");
-          final int _cursorIndexOfZerosAchieved = CursorUtil.getColumnIndexOrThrow(_cursor, "zerosAchieved");
+          final int _cursorIndexOfExtras = CursorUtil.getColumnIndexOrThrow(_cursor, "extras");
           final List<GamePlayer> _result = new ArrayList<GamePlayer>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final GamePlayer _item;
@@ -453,9 +466,11 @@ public final class GamePlayerDao_Impl implements GamePlayerDao {
             _tmpTotalScore = _cursor.getInt(_cursorIndexOfTotalScore);
             final int _tmpRoundsPlayed;
             _tmpRoundsPlayed = _cursor.getInt(_cursorIndexOfRoundsPlayed);
-            final int _tmpZerosAchieved;
-            _tmpZerosAchieved = _cursor.getInt(_cursorIndexOfZerosAchieved);
-            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpZerosAchieved);
+            final Map<String, String> _tmpExtras;
+            final String _tmp;
+            _tmp = _cursor.getString(_cursorIndexOfExtras);
+            _tmpExtras = __converters.toExtrasMap(_tmp);
+            _item = new GamePlayer(_tmpId,_tmpGameId,_tmpPlayerId,_tmpTotalScore,_tmpRoundsPlayed,_tmpExtras);
             _result.add(_item);
           }
           return _result;
