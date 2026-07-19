@@ -55,11 +55,27 @@ fun NavGraph(
             ScoreEntryScreen(
                 viewModel = gameViewModel,
                 onGameFinished = {
+                    navController.navigate("leaderboard") {
+                        popUpTo("new_game") { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("leaderboard") {
+            LeaderboardScreen(
+                viewModel = gameViewModel,
+                onGoHome = {
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
                 },
-                onBack = { navController.popBackStack() }
+                onStartNewGame = {
+                    navController.navigate("new_game") {
+                        popUpTo("home")
+                    }
+                }
             )
         }
 

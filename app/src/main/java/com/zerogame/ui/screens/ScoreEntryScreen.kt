@@ -290,7 +290,6 @@ fun ScoreEntryScreen(
                 TextButton(onClick = {
                     viewModel.endGame()
                     showEndGameDialog = false
-                    onGameFinished()
                 }) {
                     Text("End", color = MaterialTheme.colorScheme.error)
                 }

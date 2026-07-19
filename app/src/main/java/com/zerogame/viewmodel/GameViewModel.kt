@@ -48,6 +48,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val _gameFinished = MutableStateFlow(false)
     val gameFinished: StateFlow<Boolean> = _gameFinished.asStateFlow()
 
+    private val _lastFinishedGameId = MutableStateFlow<Long?>(null)
+    val lastFinishedGameId: StateFlow<Long?> = _lastFinishedGameId.asStateFlow()
+
     private val _scores = MutableStateFlow<Map<Long, String>>(emptyMap())
     val scores: StateFlow<Map<Long, String>> = _scores.asStateFlow()
 
@@ -100,6 +103,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
             if (round >= totalRounds) {
                 repository.finishGame(gameId, totalRounds)
+                _lastFinishedGameId.value = gameId
                 _gameFinished.value = true
             } else {
                 _currentRound.value = round + 1
@@ -116,7 +120,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             if (roundsPlayed > 0) {
                 repository.finishGame(gameId, roundsPlayed)
             }
-            _currentGameId.value = null
+            _lastFinishedGameId.value = gameId
             _gameFinished.value = true
         }
     }
@@ -127,5 +131,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getRoundScoresForGameId(gameId: Long): Flow<List<RoundScore>> {
         return repository.getRoundScoresByGameId(gameId)
+    }
+
+    fun resetAfterGameFinished() {
+        _currentGameId.value = null
+        _lastFinishedGameId.value = null
+        _scores.value = emptyMap()
+        _zeros.value = emptySet()
+        _currentRound.value = 1
+        _gameFinished.value = false
     }
 }
