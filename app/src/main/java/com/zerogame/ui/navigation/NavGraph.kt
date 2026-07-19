@@ -27,9 +27,7 @@ fun NavGraph(
                 onStartGame = { navController.navigate("new_game") },
                 onManagePlayers = { navController.navigate("players") },
                 onViewHistory = { navController.navigate("history") },
-                onViewProfile = { playerId ->
-                    navController.navigate("profile/$playerId")
-                }
+                onViewProfile = { navController.navigate("profile/$it") }
             )
         }
 
@@ -37,9 +35,7 @@ fun NavGraph(
             PlayersScreen(
                 viewModel = playersViewModel,
                 onBack = { navController.popBackStack() },
-                onViewProfile = { playerId ->
-                    navController.navigate("profile/$playerId")
-                }
+                onViewProfile = { navController.navigate("profile/$it") }
             )
         }
 
