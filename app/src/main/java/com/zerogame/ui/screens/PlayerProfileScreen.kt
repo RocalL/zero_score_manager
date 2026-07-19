@@ -2,9 +2,12 @@ package com.zerogame.ui.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,6 +26,7 @@ import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
 import com.zerogame.viewmodel.PlayerProfileViewModel
+import com.zerogame.viewmodel.StatsPeriod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,18 +37,24 @@ fun PlayerProfileScreen(
 ) {
     val player by viewModel.player.collectAsState()
     val gamePlayers by viewModel.gamePlayers.collectAsState()
+    val allGamePlayers by viewModel.allGamePlayers.collectAsState()
+    val allGames by viewModel.allGames.collectAsState()
+    val selectedPeriod by viewModel.selectedPeriod.collectAsState()
     val totalGames by viewModel.totalGames.collectAsState()
     val totalWins by viewModel.totalWins.collectAsState()
     val totalScore by viewModel.totalScore.collectAsState()
     val averageScore by viewModel.averageScore.collectAsState()
     val totalZeros by viewModel.totalZeros.collectAsState()
+    val totalRoundsPlayed by viewModel.totalRoundsPlayed.collectAsState()
 
     LaunchedEffect(playerId) { viewModel.loadPlayer(playerId) }
-    LaunchedEffect(gamePlayers) { viewModel.computeStats(gamePlayers) }
+    LaunchedEffect(allGamePlayers, allGames, selectedPeriod) {
+        viewModel.computeStats(allGamePlayers, allGames)
+    }
 
     val winRate = if (totalGames > 0) totalWins.toFloat() / totalGames else 0f
     val animatedWinRate by animateFloatAsState(targetValue = winRate, label = "winrate")
-    val zeroRate = if (totalGames > 0) totalZeros.toFloat() / totalGames else 0f
+    val zeroRate = if (totalRoundsPlayed > 0) totalZeros.toFloat() / totalRoundsPlayed else 0f
     val animatedZeroRate by animateFloatAsState(targetValue = zeroRate, label = "zerorate")
 
     Scaffold(
@@ -76,6 +86,7 @@ fun PlayerProfileScreen(
             item {
                 HeroCard(player?.name ?: "")
             }
+
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -95,15 +106,55 @@ fun PlayerProfileScreen(
                 }
             }
             item {
-                PerformanceCard(animatedWinRate, winRate, animatedZeroRate, zeroRate)
+                PerformanceCard(animatedWinRate, winRate, animatedZeroRate, zeroRate, totalRoundsPlayed)
             }
+
+            item {
+                PeriodSelector(selectedPeriod = selectedPeriod, onPeriodSelected = { viewModel.setPeriod(it) })
+            }
+
             if (gamePlayers.isNotEmpty()) {
                 item {
                     Text("Game History", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
-                items(gamePlayers.sortedBy { it.totalScore }) { gp ->
+                items(gamePlayers) { gp ->
                     GameHistoryCard(gp)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun PeriodSelector(
+    selectedPeriod: StatsPeriod,
+    onPeriodSelected: (StatsPeriod) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        StatsPeriod.values().forEach { period ->
+            val isSelected = period == selectedPeriod
+            val bgColor = if (isSelected) Lime else Color.Transparent
+            val textColor = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
+            val borderColor = if (isSelected) Lime else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(bgColor)
+                    .clickable { onPeriodSelected(period) }
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                Text(
+                    text = period.label,
+                    fontSize = 13.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = textColor
+                )
             }
         }
     }
@@ -179,7 +230,8 @@ fun PerformanceCard(
     animatedWinRate: Float,
     winRate: Float,
     animatedZeroRate: Float,
-    zeroRate: Float
+    zeroRate: Float,
+    totalRoundsPlayed: Int
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -196,6 +248,14 @@ fun PerformanceCard(
                 CircularStat(animatedWinRate, "Win Rate", "${(winRate * 100).toInt()}%", Lime)
                 CircularStat(animatedZeroRate, "ZERO Rate", "${(zeroRate * 100).toInt()}%", Pink)
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "ZERO Rate = ZEROs achieved / rounds played ($totalRoundsPlayed total)",
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
         }
     }
 }
@@ -205,7 +265,7 @@ fun CircularStat(progress: Float, label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = Modifier.size(100.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(
-                progress = progress,
+                progress = progress.coerceIn(0f, 1f),
                 modifier = Modifier.fillMaxSize(),
                 color = color,
                 trackColor = MaterialTheme.colorScheme.background,
