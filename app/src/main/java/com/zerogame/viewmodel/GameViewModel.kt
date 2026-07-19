@@ -42,6 +42,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentRound = MutableStateFlow(1)
     val currentRound: StateFlow<Int> = _currentRound.asStateFlow()
 
+    val totalRounds: StateFlow<Int> = _selectedPlayerIds.map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    private val _gameFinished = MutableStateFlow(false)
+    val gameFinished: StateFlow<Boolean> = _gameFinished.asStateFlow()
+
     private val _scores = MutableStateFlow<Map<Long, String>>(emptyMap())
     val scores: StateFlow<Map<Long, String>> = _scores.asStateFlow()
 
@@ -63,6 +69,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             _currentRound.value = 1
             _scores.value = _selectedPlayerIds.value.associateWith { "0" }
             _zeros.value = emptySet()
+            _gameFinished.value = false
         }
     }
 
@@ -82,6 +89,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val gameId = _currentGameId.value ?: return@launch
             val round = _currentRound.value
+            val totalRounds = _selectedPlayerIds.value.size
 
             val scoreList = _scores.value.map { (playerId, scoreStr) ->
                 val score = scoreStr.toIntOrNull() ?: 0
@@ -89,17 +97,27 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             repository.addRoundScores(gameId, round, scoreList, _zeros.value.toList())
-            _currentRound.value = round + 1
-            _scores.value = _selectedPlayerIds.value.associateWith { "0" }
-            _zeros.value = emptySet()
+
+            if (round >= totalRounds) {
+                repository.finishGame(gameId, totalRounds)
+                _gameFinished.value = true
+            } else {
+                _currentRound.value = round + 1
+                _scores.value = _selectedPlayerIds.value.associateWith { "0" }
+                _zeros.value = emptySet()
+            }
         }
     }
 
     fun endGame() {
         viewModelScope.launch {
             val gameId = _currentGameId.value ?: return@launch
-            repository.finishGame(gameId, _currentRound.value - 1)
+            val roundsPlayed = _currentRound.value - 1
+            if (roundsPlayed > 0) {
+                repository.finishGame(gameId, roundsPlayed)
+            }
             _currentGameId.value = null
+            _gameFinished.value = true
         }
     }
 

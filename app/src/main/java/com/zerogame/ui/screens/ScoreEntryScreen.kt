@@ -25,11 +25,19 @@ fun ScoreEntryScreen(
 ) {
     val currentGamePlayers by viewModel.currentGamePlayers.collectAsState()
     val currentRound by viewModel.currentRound.collectAsState()
+    val totalRounds by viewModel.totalRounds.collectAsState()
     val scores by viewModel.scores.collectAsState()
     val zeros by viewModel.zeros.collectAsState()
     val allPlayers by viewModel.allPlayers.collectAsState()
     val currentRoundScores by viewModel.currentRoundScores.collectAsState()
+    val gameFinished by viewModel.gameFinished.collectAsState()
     var showEndGameDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(gameFinished) {
+        if (gameFinished) {
+            onGameFinished()
+        }
+    }
 
     val playerMap = remember(allPlayers) {
         allPlayers.associateBy { it.id }
@@ -38,7 +46,7 @@ fun ScoreEntryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Round $currentRound") },
+                title = { Text("Round $currentRound / $totalRounds") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -64,7 +72,6 @@ fun ScoreEntryScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            // Previous rounds summary
             if (currentRoundScores.isNotEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -94,9 +101,8 @@ fun ScoreEntryScreen(
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
-            // Current round score entry
             Text(
-                text = "Enter scores for Round $currentRound",
+                text = "Enter scores for Round $currentRound of $totalRounds",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -185,7 +191,11 @@ fun ScoreEntryScreen(
             ) {
                 Icon(Icons.Default.Check, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Submit Round $currentRound", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    if (currentRound >= totalRounds) "Submit Final Round"
+                    else "Submit Round $currentRound",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
