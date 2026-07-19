@@ -2,7 +2,6 @@ package com.zerogame.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
@@ -39,10 +40,10 @@ fun NewGameScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("New Game", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.new_game_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -60,12 +61,12 @@ fun NewGameScreen(
                 .padding(horizontal = 20.dp)
         ) {
             Text(
-                text = "Select players",
+                text = stringResource(R.string.new_game_select),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "2 to 7 players",
+                text = stringResource(R.string.new_game_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -81,7 +82,7 @@ fun NewGameScreen(
                     )
                 ) {
                     Text(
-                        text = "No players available. Please add players first.",
+                        text = stringResource(R.string.new_game_no_players),
                         modifier = Modifier.padding(20.dp),
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
@@ -184,7 +185,7 @@ fun NewGameScreen(
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    "Start Game — ${selectedPlayerIds.size} players",
+                    stringResource(R.string.new_game_start, selectedPlayerIds.size),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )

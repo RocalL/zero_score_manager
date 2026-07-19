@@ -15,12 +15,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
+import com.zerogame.util.LocaleHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +43,7 @@ fun HomeScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             Box(
                 modifier = Modifier
@@ -69,17 +72,17 @@ fun HomeScreen(
                 letterSpacing = 8.sp
             )
             Text(
-                text = "Score Manager",
+                text = stringResource(R.string.home_score_manager),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 2.sp
             )
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
             HomeButton(
                 icon = Icons.Default.PlayArrow,
-                label = "New Game",
+                label = stringResource(R.string.home_new_game),
                 gradient = Brush.linearGradient(colors = listOf(Lime, Color(0xFFA8E600))),
                 onClick = onStartGame
             )
@@ -88,7 +91,7 @@ fun HomeScreen(
 
             HomeButton(
                 icon = Icons.Default.People,
-                label = "Players",
+                label = stringResource(R.string.home_players),
                 gradient = Brush.linearGradient(colors = listOf(Purple, Pink)),
                 onClick = onManagePlayers
             )
@@ -97,20 +100,79 @@ fun HomeScreen(
 
             HomeButton(
                 icon = Icons.Default.History,
-                label = "History",
+                label = stringResource(R.string.home_history),
                 gradient = Brush.linearGradient(colors = listOf(Pink, Purple)),
                 onClick = onViewHistory
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
+            LanguageToggle()
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = "by Reiner Knizia",
+                text = stringResource(R.string.home_by_author),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline
             )
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+}
+
+@Composable
+fun LanguageToggle() {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val currentCode = remember { mutableStateOf(LocaleHelper.getSavedLocale(context)) }
+    val isFrench = currentCode.value == "fr"
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        LanguageChip(
+            label = "FR",
+            selected = isFrench,
+            onClick = {
+                LocaleHelper.setLocale(context, "fr")
+                currentCode.value = "fr"
+            }
+        )
+        LanguageChip(
+            label = "EN",
+            selected = !isFrench,
+            onClick = {
+                LocaleHelper.setLocale(context, "en")
+                currentCode.value = "en"
+            }
+        )
+    }
+}
+
+@Composable
+private fun LanguageChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (selected) Lime else Color.Transparent)
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label,
+            fontSize = 13.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            color = if (selected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

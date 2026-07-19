@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Purple
 import com.zerogame.ui.theme.Pink
@@ -39,10 +41,10 @@ fun PlayersScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Players", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.players_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -59,7 +61,7 @@ fun PlayersScreen(
                 contentColor = MaterialTheme.colorScheme.background,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Player")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.players_add))
             }
         }
     ) { padding ->
@@ -79,12 +81,12 @@ fun PlayersScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "No players yet",
+                        text = stringResource(R.string.players_empty),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Tap + to add a player",
+                        text = stringResource(R.string.players_empty_hint),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.outline
                     )
@@ -143,14 +145,14 @@ fun PlayersScreen(
                             IconButton(onClick = { editingPlayer = player }) {
                                 Icon(
                                     Icons.Default.Edit,
-                                    contentDescription = "Edit",
+                                    contentDescription = stringResource(R.string.edit),
                                     tint = MaterialTheme.colorScheme.outline
                                 )
                             }
                             IconButton(onClick = { viewModel.deletePlayer(player) }) {
                                 Icon(
                                     Icons.Default.Delete,
-                                    contentDescription = "Delete",
+                                    contentDescription = stringResource(R.string.delete),
                                     tint = MaterialTheme.colorScheme.error
                                 )
                             }
@@ -163,7 +165,7 @@ fun PlayersScreen(
 
     if (showAddDialog) {
         PlayerDialog(
-            title = "Add Player",
+            title = stringResource(R.string.players_add),
             initialName = "",
             onDismiss = { showAddDialog = false },
             onConfirm = { name ->
@@ -175,7 +177,7 @@ fun PlayersScreen(
 
     editingPlayer?.let { player ->
         PlayerDialog(
-            title = "Edit Player",
+            title = stringResource(R.string.players_edit),
             initialName = player.name,
             onDismiss = { editingPlayer = null },
             onConfirm = { name ->
@@ -203,7 +205,7 @@ fun PlayerDialog(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Player Name") },
+                label = { Text(stringResource(R.string.players_name_label)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Lime,
@@ -217,12 +219,12 @@ fun PlayerDialog(
                 onClick = { onConfirm(name) },
                 enabled = name.isNotBlank()
             ) {
-                Text("Save", color = Lime)
+                Text(stringResource(R.string.save), color = Lime)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

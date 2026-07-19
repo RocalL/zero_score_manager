@@ -17,10 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
@@ -57,9 +59,9 @@ fun ScoreEntryScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Round $currentRound", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(stringResource(R.string.score_round, currentRound), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Text(
-                            "$currentRound of $totalRounds",
+                            stringResource(R.string.score_round_of, currentRound, totalRounds),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -67,12 +69,12 @@ fun ScoreEntryScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { showEndGameDialog = true }) {
-                        Icon(Icons.Default.Flag, contentDescription = "End Game")
+                        Icon(Icons.Default.Flag, contentDescription = stringResource(R.string.score_end_game))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -112,7 +114,7 @@ fun ScoreEntryScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Standings",
+                            text = stringResource(R.string.score_standings),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = Lime
@@ -121,7 +123,7 @@ fun ScoreEntryScreen(
                         currentRoundScores
                             .groupBy { it.playerId }
                             .map { (playerId, roundScores) ->
-                                val playerName = playerMap[playerId]?.name ?: "Player"
+                                val playerName = playerMap[playerId]?.name ?: stringResource(R.string.player_fallback)
                                 val totalScore = roundScores.sumOf { it.score }
                                 playerName to totalScore
                             }
@@ -139,7 +141,7 @@ fun ScoreEntryScreen(
                                         color = if (index == 0) Lime else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Text(
-                                        text = "$score pts",
+                                        text = "$score ${stringResource(R.string.pts)}",
                                         style = MaterialTheme.typography.bodySmall,
                                         fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal
                                     )
@@ -151,7 +153,7 @@ fun ScoreEntryScreen(
             }
 
             Text(
-                text = "Enter scores",
+                text = stringResource(R.string.score_enter),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -160,7 +162,7 @@ fun ScoreEntryScreen(
 
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(currentGamePlayers) { gamePlayer ->
-                    val playerName = playerMap[gamePlayer.playerId]?.name ?: "Player"
+                    val playerName = playerMap[gamePlayer.playerId]?.name ?: stringResource(R.string.player_fallback)
                     val isZero = gamePlayer.playerId in zeros
 
                     Card(
@@ -209,7 +211,7 @@ fun ScoreEntryScreen(
                                     fontSize = 15.sp
                                 )
                                 Text(
-                                    text = "Total: ${gamePlayer.totalScore} pts",
+                                    text = stringResource(R.string.score_total, gamePlayer.totalScore),
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -271,7 +273,7 @@ fun ScoreEntryScreen(
                 Icon(Icons.Default.Check, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    if (currentRound >= totalRounds) "Final Round" else "Submit Round",
+                    if (currentRound >= totalRounds) stringResource(R.string.score_final) else stringResource(R.string.score_submit),
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
@@ -284,19 +286,19 @@ fun ScoreEntryScreen(
         AlertDialog(
             onDismissRequest = { showEndGameDialog = false },
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            title = { Text("End Game?") },
-            text = { Text("Are you sure you want to end the current game?") },
+            title = { Text(stringResource(R.string.score_end_title)) },
+            text = { Text(stringResource(R.string.score_end_confirm)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.endGame()
                     showEndGameDialog = false
                 }) {
-                    Text("End", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.end), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showEndGameDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )

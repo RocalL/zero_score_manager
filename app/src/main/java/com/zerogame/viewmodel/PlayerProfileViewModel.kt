@@ -10,11 +10,13 @@ import com.zerogame.data.model.Player
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-enum class StatsPeriod(val label: String) {
-    ALL("All"),
-    LAST_5("Last 5"),
-    LAST_10("Last 10"),
-    LAST_50("Last 50")
+import com.zerogame.R
+
+enum class StatsPeriod(val labelResId: Int) {
+    ALL(R.string.period_all),
+    LAST_5(R.string.period_last_5),
+    LAST_10(R.string.period_last_10),
+    LAST_50(R.string.period_last_50)
 }
 
 class PlayerProfileViewModel(application: Application) : AndroidViewModel(application) {

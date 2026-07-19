@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
@@ -61,10 +63,10 @@ fun PlayerProfileScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text(player?.name ?: "Profile", fontWeight = FontWeight.Bold) },
+                title = { Text(player?.name ?: stringResource(R.string.profile_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -92,8 +94,8 @@ fun PlayerProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    StatCard(Modifier.weight(1f), totalGames.toString(), "Games", Icons.Default.EmojiEvents, Brush.linearGradient(listOf(Purple, Purple.copy(alpha = 0.7f))))
-                    StatCard(Modifier.weight(1f), totalWins.toString(), "Wins", Icons.Default.Star, Brush.linearGradient(listOf(Lime, Lime.copy(alpha = 0.7f))))
+                    StatCard(Modifier.weight(1f), totalGames.toString(), stringResource(R.string.profile_games), Icons.Default.EmojiEvents, Brush.linearGradient(listOf(Purple, Purple.copy(alpha = 0.7f))))
+                    StatCard(Modifier.weight(1f), totalWins.toString(), stringResource(R.string.profile_wins), Icons.Default.Star, Brush.linearGradient(listOf(Lime, Lime.copy(alpha = 0.7f))))
                 }
             }
             item {
@@ -101,8 +103,8 @@ fun PlayerProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    StatCard(Modifier.weight(1f), String.format("%.1f", averageScore), "Avg Score", Icons.Default.TrendingDown, Brush.linearGradient(listOf(Pink, Pink.copy(alpha = 0.7f))))
-                    StatCard(Modifier.weight(1f), totalScore.toString(), "Total Pts", Icons.Default.Score, Brush.linearGradient(listOf(Purple, Pink)))
+                    StatCard(Modifier.weight(1f), String.format("%.1f", averageScore), stringResource(R.string.profile_avg_score), Icons.Default.TrendingDown, Brush.linearGradient(listOf(Pink, Pink.copy(alpha = 0.7f))))
+                    StatCard(Modifier.weight(1f), totalScore.toString(), stringResource(R.string.profile_total_pts), Icons.Default.Score, Brush.linearGradient(listOf(Purple, Pink)))
                 }
             }
             item {
@@ -115,7 +117,7 @@ fun PlayerProfileScreen(
 
             if (gamePlayers.isNotEmpty()) {
                 item {
-                    Text("Game History", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(stringResource(R.string.profile_game_history), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
                 items(gamePlayers) { gp ->
                     GameHistoryCard(gp)
@@ -140,7 +142,6 @@ fun PeriodSelector(
             val isSelected = period == selectedPeriod
             val bgColor = if (isSelected) Lime else Color.Transparent
             val textColor = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
-            val borderColor = if (isSelected) Lime else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 
             Box(
                 modifier = Modifier
@@ -150,7 +151,7 @@ fun PeriodSelector(
                     .padding(horizontal = 16.dp, vertical = 10.dp)
             ) {
                 Text(
-                    text = period.label,
+                    text = stringResource(period.labelResId),
                     fontSize = 13.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                     color = textColor
@@ -239,18 +240,18 @@ fun PerformanceCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Text("Performance", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(stringResource(R.string.profile_performance), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                CircularStat(animatedWinRate, "Win Rate", "${(winRate * 100).toInt()}%", Lime)
-                CircularStat(animatedZeroRate, "ZERO Rate", "${(zeroRate * 100).toInt()}%", Pink)
+                CircularStat(animatedWinRate, stringResource(R.string.profile_win_rate), "${(winRate * 100).toInt()}%", Lime)
+                CircularStat(animatedZeroRate, stringResource(R.string.profile_zero_rate), "${(zeroRate * 100).toInt()}%", Pink)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "ZERO Rate = ZEROs achieved / rounds played ($totalRoundsPlayed total)",
+                text = stringResource(R.string.profile_zero_rate_desc, totalRoundsPlayed),
                 fontSize = 11.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
@@ -303,18 +304,18 @@ fun GameHistoryCard(gp: com.zerogame.data.model.GamePlayer) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text("Game #${gp.gameId}", fontWeight = FontWeight.SemiBold)
-                Text("${gp.roundsPlayed} rounds", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.profile_game_n, gp.gameId.toInt()), fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.profile_rounds, gp.roundsPlayed), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    "${gp.totalScore} pts",
+                    "${gp.totalScore} ${stringResource(R.string.pts)}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = if (gp.totalScore == 0) Lime else MaterialTheme.colorScheme.onSurface
                 )
                 if (gp.zerosAchieved > 0) {
-                    Text("${gp.zerosAchieved}x ZERO", fontSize = 11.sp, color = Lime)
+                    Text(stringResource(R.string.profile_x_zero, gp.zerosAchieved), fontSize = 11.sp, color = Lime)
                 }
             }
         }

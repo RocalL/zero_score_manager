@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.data.model.Game
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
@@ -39,10 +41,10 @@ fun GameHistoryScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Game History", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.history_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -67,8 +69,8 @@ fun GameHistoryScreen(
                         tint = MaterialTheme.colorScheme.outline
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("No games yet", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Start a game to see history", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.history_empty), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.history_empty_hint), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                 }
             }
         } else {
@@ -137,7 +139,7 @@ fun GameHistoryItem(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(dateStr, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                        Text("${game.numberOfRounds} rounds  ${gamePlayers.size} players", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.history_item, game.numberOfRounds, gamePlayers.size), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
                 Icon(
@@ -153,7 +155,7 @@ fun GameHistoryItem(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 gamePlayers.sortedBy { it.totalScore }.forEachIndexed { index, gp ->
-                    val name = playerNames[gp.playerId] ?: "Player"
+                    val name = playerNames[gp.playerId] ?: stringResource(R.string.player_fallback)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -171,7 +173,7 @@ fun GameHistoryItem(
                             Text(name, fontSize = 14.sp, color = if (index == 0) Lime else MaterialTheme.colorScheme.onSurface)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("${gp.totalScore} pts", fontSize = 14.sp, fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal)
+                            Text("${gp.totalScore} ${stringResource(R.string.pts)}", fontSize = 14.sp, fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal)
                             if (gp.zerosAchieved > 0) {
                                 Text("  ${gp.zerosAchieved}x0", fontSize = 11.sp, color = Lime, fontWeight = FontWeight.Bold)
                             }
@@ -185,7 +187,7 @@ fun GameHistoryItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
                     }
                 }
             }

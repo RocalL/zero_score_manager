@@ -1,3 +1,88 @@
 <resources>
     <string name="app_name">Zero Score</string>
+
+    <!-- Home -->
+    <string name="home_score_manager">Score Manager</string>
+    <string name="home_new_game">New Game</string>
+    <string name="home_players">Players</string>
+    <string name="home_history">History</string>
+    <string name="home_by_author">by Reiner Knizia</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="end">End</string>
+    <string name="home_button">Home</string>
+    <string name="pts">pts</string>
+    <string name="player_fallback">Player</string>
+
+    <!-- Players Screen -->
+    <string name="players_title">Players</string>
+    <string name="players_empty">No players yet</string>
+    <string name="players_empty_hint">Tap + to add a player</string>
+    <string name="players_add">Add Player</string>
+    <string name="players_edit">Edit Player</string>
+    <string name="players_name_label">Player Name</string>
+
+    <!-- New Game Screen -->
+    <string name="new_game_title">New Game</string>
+    <string name="new_game_select">Select players</string>
+    <string name="new_game_hint">2 to 7 players</string>
+    <string name="new_game_no_players">No players available. Please add players first.</string>
+    <string name="new_game_start">Start Game \u2014 %1$d players</string>
+
+    <!-- Score Entry Screen -->
+    <string name="score_round">Round %1$d</string>
+    <string name="score_round_of">%1$d of %2$d</string>
+    <string name="score_end_game">End Game</string>
+    <string name="score_standings">Standings</string>
+    <string name="score_enter">Enter scores</string>
+    <string name="score_total">Total: %1$d pts</string>
+    <string name="score_submit">Submit Round</string>
+    <string name="score_final">Final Round</string>
+    <string name="score_end_title">End Game?</string>
+    <string name="score_end_confirm">Are you sure you want to end the current game?</string>
+
+    <!-- Leaderboard Screen -->
+    <string name="leaderboard_game_over">GAME OVER</string>
+    <string name="leaderboard_wins">%1$s Wins!</string>
+    <string name="leaderboard_points">%1$d points</string>
+    <string name="leaderboard_final_standings">Final Standings</string>
+    <string name="leaderboard_zero_x">ZERO x%1$d</string>
+    <string name="leaderboard_round_by_round">Round by Round</string>
+    <string name="leaderboard_round">Round %1$d</string>
+
+    <!-- Game History Screen -->
+    <string name="history_title">Game History</string>
+    <string name="history_empty">No games yet</string>
+    <string name="history_empty_hint">Start a game to see history</string>
+    <string name="history_item">%1$d rounds  %2$d players</string>
+
+    <!-- Player Profile Screen -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_games">Games</string>
+    <string name="profile_wins">Wins</string>
+    <string name="profile_avg_score">Avg Score</string>
+    <string name="profile_total_pts">Total Pts</string>
+    <string name="profile_performance">Performance</string>
+    <string name="profile_win_rate">Win Rate</string>
+    <string name="profile_zero_rate">ZERO Rate</string>
+    <string name="profile_zero_rate_desc">ZERO Rate = ZEROs achieved / rounds played (%1$d total)</string>
+    <string name="profile_game_history">Game History</string>
+    <string name="profile_game_n">Game #%1$d</string>
+    <string name="profile_rounds">%1$d rounds</string>
+    <string name="profile_x_zero">%1$dx ZERO</string>
+
+    <!-- Stats Period -->
+    <string name="period_all">All</string>
+    <string name="period_last_5">Last 5</string>
+    <string name="period_last_10">Last 10</string>
+    <string name="period_last_50">Last 50</string>
+
+    <!-- Language -->
+    <string name="language_en">EN</string>
+    <string name="language_fr">FR</string>
 </resources>

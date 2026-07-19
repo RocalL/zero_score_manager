@@ -17,10 +17,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zerogame.R
 import com.zerogame.ui.theme.Lime
 import com.zerogame.ui.theme.Pink
 import com.zerogame.ui.theme.Purple
@@ -38,24 +39,25 @@ fun LeaderboardScreen(
     val totalRounds by viewModel.totalRounds.collectAsState()
 
     val playerMap = remember(allPlayers) { allPlayers.associateBy { it.id } }
+    val fallbackName = stringResource(R.string.player_fallback)
 
-    val rankings = remember(currentGamePlayers) {
+    val rankings = remember(currentGamePlayers, fallbackName) {
         currentGamePlayers
             .map { gp ->
-                val name = playerMap[gp.playerId]?.name ?: "Player"
+                val name = playerMap[gp.playerId]?.name ?: fallbackName
                 Triple(gp.playerId, name, gp.totalScore)
             }
             .sortedBy { it.third }
     }
 
     val winner = rankings.firstOrNull()
-    val roundBreakdown = remember(currentRoundScores) {
+    val roundBreakdown = remember(currentRoundScores, fallbackName) {
         currentRoundScores
             .groupBy { it.roundNumber }
             .toSortedMap()
             .map { (round, scores) ->
                 round to scores.map { rs ->
-                    val name = playerMap[rs.playerId]?.name ?: "Player"
+                    val name = playerMap[rs.playerId]?.name ?: fallbackName
                     Quadruple(rs.playerId, name, rs.score, rs.achievedZero)
                 }.sortedBy { it.third }
             }
@@ -115,7 +117,7 @@ fun LeaderboardScreen(
                     ) {
                         Icon(Icons.Default.Home, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Home", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.home_button), fontWeight = FontWeight.Bold)
                     }
 
                     Button(
@@ -134,7 +136,7 @@ fun LeaderboardScreen(
                     ) {
                         Icon(Icons.Default.Refresh, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("New Game", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.home_new_game), fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -178,7 +180,7 @@ fun LeaderboardScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "GAME OVER",
+                            text = stringResource(R.string.leaderboard_game_over),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = Lime,
@@ -187,14 +189,14 @@ fun LeaderboardScreen(
 
                         if (winner != null) {
                             Text(
-                                text = "${winner.second} Wins!",
+                                text = stringResource(R.string.leaderboard_wins, winner.second),
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color.White,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
                             Text(
-                                text = "${winner.third} points",
+                                text = stringResource(R.string.leaderboard_points, winner.third),
                                 fontSize = 16.sp,
                                 color = Lime.copy(alpha = fadeInAlpha),
                                 fontWeight = FontWeight.SemiBold
@@ -206,7 +208,7 @@ fun LeaderboardScreen(
 
             item {
                 Text(
-                    text = "Final Standings",
+                    text = stringResource(R.string.leaderboard_final_standings),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
@@ -278,7 +280,7 @@ fun LeaderboardScreen(
                             )
                             if (zeros > 0) {
                                 Text(
-                                    text = "ZERO x$zeros",
+                                    text = stringResource(R.string.leaderboard_zero_x, zeros),
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Lime,
@@ -295,7 +297,7 @@ fun LeaderboardScreen(
                                 color = if (isWinner) Lime else MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "pts",
+                                text = stringResource(R.string.pts),
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -307,7 +309,7 @@ fun LeaderboardScreen(
             if (roundBreakdown.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Round by Round",
+                        text = stringResource(R.string.leaderboard_round_by_round),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp)
@@ -326,7 +328,7 @@ fun LeaderboardScreen(
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
-                                text = "Round $round",
+                                text = stringResource(R.string.leaderboard_round, round),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 13.sp,
                                 color = Purple,
@@ -364,7 +366,7 @@ fun LeaderboardScreen(
                                         }
                                     }
                                     Text(
-                                        text = "$score pts",
+                                        text = "$score ${stringResource(R.string.pts)}",
                                         fontSize = 13.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = if (achievedZero) Lime else MaterialTheme.colorScheme.onSurfaceVariant
