@@ -1,12 +1,10 @@
 package com.zerogame.ui.screens
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -48,6 +46,9 @@ fun SkyjoCardPickerScreen(
 
     var cellValues by remember {
         mutableStateOf(MutableList(12) { 0 })
+    }
+    var setIndices by remember {
+        mutableStateOf(setOf<Int>())
     }
 
     val activeValues = remember(cellValues, columns, rows) {
@@ -162,7 +163,7 @@ fun SkyjoCardPickerScreen(
                     for (col in 0 until columns) {
                         val idx = row * columns + col
                         val value = cellValues[idx]
-                        val isSet = value != 0
+                        val isSet = idx in setIndices
 
                         val bgColor by animateColorAsState(
                             targetValue = when {
@@ -192,21 +193,17 @@ fun SkyjoCardPickerScreen(
                             },
                             label = "text"
                         )
-                        val scale by animateFloatAsState(
-                            targetValue = if (isSet) 1f else 0.9f,
-                            label = "scale"
-                        )
 
                         Box(
                             modifier = Modifier
-                                .size(88.dp)
+                                .size(88.dp, 110.dp)
                                 .shadow(
                                     elevation = if (isSet) 8.dp else 2.dp,
-                                    shape = CircleShape
+                                    shape = RoundedCornerShape(12.dp)
                                 )
-                                .clip(CircleShape)
+                                .clip(RoundedCornerShape(12.dp))
                                 .background(
-                                    Brush.radialGradient(
+                                    Brush.verticalGradient(
                                         colors = if (isSet) listOf(bgColor, bgColor.copy(alpha = 0.5f))
                                         else listOf(Color.White.copy(alpha = 0.06f), Color.White.copy(alpha = 0.02f))
                                     )
@@ -214,7 +211,7 @@ fun SkyjoCardPickerScreen(
                                 .border(
                                     width = if (isSet) 2.5.dp else 1.5.dp,
                                     color = borderColor,
-                                    shape = CircleShape
+                                    shape = RoundedCornerShape(12.dp)
                                 )
                                 .clickable { editingIndex = idx },
                             contentAlignment = Alignment.Center
@@ -275,6 +272,7 @@ fun SkyjoCardPickerScreen(
                 val newList = cellValues.toMutableList()
                 newList[idx] = newValue
                 cellValues = newList
+                setIndices = setIndices + idx
             },
             onDismiss = { editingIndex = null }
         )
