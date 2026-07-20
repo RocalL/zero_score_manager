@@ -1,7 +1,6 @@
 package com.zerogame.ui.screens
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.graphicsLayer
+
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -123,19 +122,10 @@ fun ValuePickerDialog(
                             },
                             label = "text"
                         )
-                        val scale by animateFloatAsState(
-                            targetValue = if (isSelected) 1.15f else 1f,
-                            label = "scale"
-                        )
-
                         Box(
                             modifier = Modifier
                                 .offset(x = x.dp, y = y.dp)
                                 .size(48.dp)
-                                .graphicsLayer {
-                                    scaleX = scale
-                                    scaleY = scale
-                                }
                                 .shadow(
                                     elevation = if (isSelected) 8.dp else 2.dp,
                                     shape = CircleShape
