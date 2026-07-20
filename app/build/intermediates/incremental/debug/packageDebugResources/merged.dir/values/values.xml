@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#1976D2</color>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
+    <string name="card_picker_button">Pick</string>
+    <string name="card_picker_confirm">Confirm \u2014 %1$d pts</string>
+    <string name="card_picker_score">Round Score</string>
+    <string name="card_picker_selected">%1$d / %2$d cards</string>
+    <string name="card_picker_title">Pick Cards \u2014 %1$s</string>
     <string name="coming_soon">Coming soon</string>
     <string name="data_export">Export</string>
     <string name="data_import">Import</string>
@@ -109,9 +114,16 @@
     <string name="skyjo_enter_round_scores">Enter Round Scores</string>
     <string name="skyjo_enter_round_scores_hint">Tap the flag to mark the trigger player</string>
     <string name="skyjo_new_game">New Skyjo Game</string>
+    <string name="skyjo_picker_button">Pick</string>
+    <string name="skyjo_picker_cards">%1$d cards</string>
+    <string name="skyjo_picker_cols">Cols</string>
+    <string name="skyjo_picker_confirm">Confirm — %1$d pts</string>
+    <string name="skyjo_picker_rows">Rows</string>
+    <string name="skyjo_picker_score">Round Score</string>
+    <string name="skyjo_picker_title">Pick Cards — %1$s</string>
     <string name="skyjo_players_hint">2 to 8 players</string>
     <string name="skyjo_start_game">Start Game \u2014 %1$d players</string>
     <string name="skyjo_submit_round">Submit Round</string>
     <string name="skyjo_trigger">Trigger</string>
-    <style name="Theme.ZeroGame" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="Theme.TableScore" parent="Theme.AppCompat.Light.NoActionBar"/>
 </resources>

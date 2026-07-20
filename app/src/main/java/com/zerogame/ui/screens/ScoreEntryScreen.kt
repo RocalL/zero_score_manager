@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zerogame.R
@@ -33,6 +31,7 @@ import com.zerogame.viewmodel.GameViewModel
 fun ScoreEntryScreen(
     viewModel: GameViewModel,
     onGameFinished: () -> Unit,
+    onPickCards: (Long) -> Unit,
     onBack: () -> Unit
 ) {
     val currentGamePlayers by viewModel.currentGamePlayers.collectAsState()
@@ -217,24 +216,41 @@ fun ScoreEntryScreen(
                                 )
                             }
 
-                            OutlinedTextField(
-                                value = scores[gamePlayer.playerId] ?: "0",
-                                onValueChange = { viewModel.updateScore(gamePlayer.playerId, it) },
-                                modifier = Modifier.width(72.dp),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
-                                ),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = if (isZero) Lime else Purple,
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                            FilledTonalButton(
+                                onClick = { onPickCards(gamePlayer.playerId) },
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                modifier = Modifier.height(36.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = Purple.copy(alpha = 0.2f),
+                                    contentColor = Purple
                                 )
-                            )
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.card_picker_button),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                            val roundScore = scores[gamePlayer.playerId]?.toIntOrNull() ?: 0
+                            if (roundScore != 0 || gamePlayer.playerId in zeros) {
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = if (isZero) Lime.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surface
+                                ) {
+                                    Text(
+                                        text = if (isZero) "0" else "$roundScore",
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isZero) Lime else MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(6.dp))
 
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Checkbox(

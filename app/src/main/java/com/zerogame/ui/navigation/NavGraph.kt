@@ -64,6 +64,31 @@ fun NavGraph(
                         popUpTo("zero_new_game") { inclusive = true }
                     }
                 },
+                onPickCards = { playerId ->
+                    val playerName = gameViewModel.allPlayers.value.find { it.id == playerId }?.name ?: "Player"
+                    navController.navigate("card_picker/$playerId/${java.net.URLEncoder.encode(playerName, "UTF-8")}")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            "card_picker/{playerId}/{playerName}",
+            arguments = listOf(
+                navArgument("playerId") { type = NavType.LongType },
+                navArgument("playerName") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val playerId = backStackEntry.arguments?.getLong("playerId") ?: return@composable
+            val playerName = java.net.URLDecoder.decode(
+                backStackEntry.arguments?.getString("playerName") ?: "Player",
+                "UTF-8"
+            )
+            CardPickerScreen(
+                viewModel = gameViewModel,
+                playerId = playerId,
+                playerName = playerName,
+                onConfirm = { navController.popBackStack() },
                 onBack = { navController.popBackStack() }
             )
         }
@@ -89,6 +114,31 @@ fun NavGraph(
                         popUpTo("skyjo_new_game") { inclusive = true }
                     }
                 },
+                onPickCards = { playerId ->
+                    val playerName = skyjoGameViewModel.allPlayers.value.find { it.id == playerId }?.name ?: "Player"
+                    navController.navigate("skyjo_card_picker/$playerId/${java.net.URLEncoder.encode(playerName, "UTF-8")}")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            "skyjo_card_picker/{playerId}/{playerName}",
+            arguments = listOf(
+                navArgument("playerId") { type = NavType.LongType },
+                navArgument("playerName") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val playerId = backStackEntry.arguments?.getLong("playerId") ?: return@composable
+            val playerName = java.net.URLDecoder.decode(
+                backStackEntry.arguments?.getString("playerName") ?: "Player",
+                "UTF-8"
+            )
+            SkyjoCardPickerScreen(
+                viewModel = skyjoGameViewModel,
+                playerId = playerId,
+                playerName = playerName,
+                onConfirm = { navController.popBackStack() },
                 onBack = { navController.popBackStack() }
             )
         }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
 
     <!-- Home -->
     <string name="home_score_manager">Score Manager</string>
@@ -102,6 +102,22 @@
     <string name="skyjo_trigger">Trigger</string>
     <string name="skyjo_cols">Cols</string>
     <string name="skyjo_submit_round">Submit Round</string>
+
+    <!-- Skyjo Card Picker -->
+    <string name="skyjo_picker_title">Pick Cards — %1$s</string>
+    <string name="skyjo_picker_cards">%1$d cards</string>
+    <string name="skyjo_picker_score">Round Score</string>
+    <string name="skyjo_picker_cols">Cols</string>
+    <string name="skyjo_picker_rows">Rows</string>
+    <string name="skyjo_picker_confirm">Confirm — %1$d pts</string>
+    <string name="skyjo_picker_button">Pick</string>
+
+    <!-- Card Picker -->
+    <string name="card_picker_title">Pick Cards \u2014 %1$s</string>
+    <string name="card_picker_selected">%1$d / %2$d cards</string>
+    <string name="card_picker_score">Round Score</string>
+    <string name="card_picker_confirm">Confirm \u2014 %1$d pts</string>
+    <string name="card_picker_button">Pick</string>
 
     <!-- Game Types & Filters -->
     <string name="game_type_zero">Zero</string>

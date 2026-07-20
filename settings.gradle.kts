@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ZeroScoreManager"
+rootProject.name = "TableScore"
 include(":app")

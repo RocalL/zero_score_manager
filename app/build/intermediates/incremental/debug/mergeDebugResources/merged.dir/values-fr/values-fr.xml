@@ -27,7 +27,7 @@
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Partager avec"</string>
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Partager avec <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Réduire"</string>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
     <string name="back">Retour</string>
     <string msgid="6128938260108474660" name="bottom_sheet_collapse_description">"Réduire la bottom sheet"</string>
     <string msgid="1918297411568599192" name="bottom_sheet_dismiss_description">"Fermer la bottom sheet"</string>
@@ -41,6 +41,11 @@
     <string msgid="8623827134497363134" name="call_notification_ongoing_text">"Appel en cours"</string>
     <string msgid="59049573811482460" name="call_notification_screening_text">"Filtrage d\'un appel entrant"</string>
     <string name="cancel">Annuler</string>
+    <string name="card_picker_button">Choisir</string>
+    <string name="card_picker_confirm">Valider \u2014 %1$d pts</string>
+    <string name="card_picker_score">Score de la manche</string>
+    <string name="card_picker_selected">%1$d / %2$d cartes</string>
+    <string name="card_picker_title">Choisir les cartes \u2014 %1$s</string>
     <string msgid="406453423630273620" name="close_drawer">"Fermer le menu de navigation"</string>
     <string msgid="7573152094250666567" name="close_sheet">"Fermer la feuille"</string>
     <string msgid="5389587048670450460" name="collapsed">"Réduit"</string>
@@ -196,6 +201,13 @@
     <string name="skyjo_enter_round_scores">Saisir les scores de la manche</string>
     <string name="skyjo_enter_round_scores_hint">Appuyez sur le drapeau pour marquer le joueur déclencheur</string>
     <string name="skyjo_new_game">Nouvelle partie Skyjo</string>
+    <string name="skyjo_picker_button">Choisir</string>
+    <string name="skyjo_picker_cards">%1$d cartes</string>
+    <string name="skyjo_picker_cols">Colonnes</string>
+    <string name="skyjo_picker_confirm">Valider — %1$d pts</string>
+    <string name="skyjo_picker_rows">Lignes</string>
+    <string name="skyjo_picker_score">Score de la manche</string>
+    <string name="skyjo_picker_title">Choisir les cartes — %1$s</string>
     <string name="skyjo_players_hint">2 à 8 joueurs</string>
     <string name="skyjo_start_game">Lancer la partie \u2014 %1$d joueurs</string>
     <string name="skyjo_submit_round">Valider la manche</string>

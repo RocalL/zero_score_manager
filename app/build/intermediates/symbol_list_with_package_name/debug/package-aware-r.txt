@@ -951,6 +951,11 @@ string call_notification_incoming_text
 string call_notification_ongoing_text
 string call_notification_screening_text
 string cancel
+string card_picker_button
+string card_picker_confirm
+string card_picker_score
+string card_picker_selected
+string card_picker_title
 string close_drawer
 string close_sheet
 string collapsed
@@ -1107,6 +1112,13 @@ string skyjo_cumulative_scores
 string skyjo_enter_round_scores
 string skyjo_enter_round_scores_hint
 string skyjo_new_game
+string skyjo_picker_button
+string skyjo_picker_cards
+string skyjo_picker_cols
+string skyjo_picker_confirm
+string skyjo_picker_rows
+string skyjo_picker_score
+string skyjo_picker_title
 string skyjo_players_hint
 string skyjo_start_game
 string skyjo_submit_round
@@ -1400,7 +1412,7 @@ style Theme_AppCompat_Light_Dialog_MinWidth
 style Theme_AppCompat_Light_DialogWhenLarge
 style Theme_AppCompat_Light_NoActionBar
 style Theme_AppCompat_NoActionBar
-style Theme_ZeroGame
+style Theme_TableScore
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

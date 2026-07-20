@@ -81,6 +81,11 @@ class SkyjoGameViewModel(application: Application) : AndroidViewModel(applicatio
         _scores.update { it + (playerId to score) }
     }
 
+    fun setScoreFromCards(playerId: Long, cardValues: List<Int>) {
+        val score = cardValues.sum()
+        _scores.update { it + (playerId to score.toString()) }
+    }
+
     fun setTriggerPlayer(playerId: Long) {
         _triggerPlayerId.value = playerId
     }

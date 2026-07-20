@@ -90,6 +90,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun setScoreFromCards(playerId: Long, score: Int, isZero: Boolean) {
+        _scores.update { current -> current + (playerId to score.toString()) }
+        if (isZero) {
+            _zeros.update { current -> current + playerId }
+        } else {
+            _zeros.update { current -> current - playerId }
+        }
+    }
+
     fun submitRound() {
         viewModelScope.launch {
             val gameId = _currentGameId.value ?: return@launch

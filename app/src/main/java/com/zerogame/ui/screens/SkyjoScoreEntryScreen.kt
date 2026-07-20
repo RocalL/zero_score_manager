@@ -35,6 +35,7 @@ import com.zerogame.viewmodel.SkyjoGameViewModel
 fun SkyjoScoreEntryScreen(
     viewModel: SkyjoGameViewModel,
     onGameFinished: () -> Unit,
+    onPickCards: (Long) -> Unit,
     onBack: () -> Unit
 ) {
     val currentGamePlayers by viewModel.currentGamePlayers.collectAsState()
@@ -241,6 +242,26 @@ fun SkyjoScoreEntryScreen(
                                         unfocusedBorderColor = MaterialTheme.colorScheme.outline
                                     )
                                 )
+
+                                Spacer(modifier = Modifier.width(6.dp))
+
+                                FilledTonalButton(
+                                    onClick = { onPickCards(gamePlayer.playerId) },
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                    modifier = Modifier.height(36.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.filledTonalButtonColors(
+                                        containerColor = Purple.copy(alpha = 0.2f),
+                                        contentColor = Purple
+                                    )
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.skyjo_picker_button),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
                             }
 
                             Spacer(modifier = Modifier.height(8.dp))

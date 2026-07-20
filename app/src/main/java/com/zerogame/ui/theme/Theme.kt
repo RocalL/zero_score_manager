@@ -53,7 +53,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun ZeroGameTheme(
+fun TableScoreTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

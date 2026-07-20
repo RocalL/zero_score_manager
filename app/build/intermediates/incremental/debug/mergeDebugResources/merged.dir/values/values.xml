@@ -307,7 +307,7 @@
     <string name="abc_shareactionprovider_share_with_application">Share with <ns1:g example="Mail" id="application_name">%s</ns1:g></string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
     <string name="back">Back</string>
     <string name="bottom_sheet_collapse_description">Collapse bottom sheet</string>
     <string name="bottom_sheet_dismiss_description">Dismiss bottom sheet</string>
@@ -321,6 +321,11 @@
     <string name="call_notification_ongoing_text">Ongoing call</string>
     <string name="call_notification_screening_text">Screening an incoming call</string>
     <string name="cancel">Cancel</string>
+    <string name="card_picker_button">Pick</string>
+    <string name="card_picker_confirm">Confirm \u2014 %1$d pts</string>
+    <string name="card_picker_score">Round Score</string>
+    <string name="card_picker_selected">%1$d / %2$d cards</string>
+    <string name="card_picker_title">Pick Cards \u2014 %1$s</string>
     <string name="close_drawer">"Close navigation menu"</string>
     <string name="close_sheet">"Close sheet"</string>
     <string name="collapsed">Collapsed</string>
@@ -481,6 +486,13 @@
     <string name="skyjo_enter_round_scores">Enter Round Scores</string>
     <string name="skyjo_enter_round_scores_hint">Tap the flag to mark the trigger player</string>
     <string name="skyjo_new_game">New Skyjo Game</string>
+    <string name="skyjo_picker_button">Pick</string>
+    <string name="skyjo_picker_cards">%1$d cards</string>
+    <string name="skyjo_picker_cols">Cols</string>
+    <string name="skyjo_picker_confirm">Confirm — %1$d pts</string>
+    <string name="skyjo_picker_rows">Rows</string>
+    <string name="skyjo_picker_score">Round Score</string>
+    <string name="skyjo_picker_title">Pick Cards — %1$s</string>
     <string name="skyjo_players_hint">2 to 8 players</string>
     <string name="skyjo_start_game">Start Game \u2014 %1$d players</string>
     <string name="skyjo_submit_round">Submit Round</string>
@@ -1921,7 +1933,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.ZeroGame" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="Theme.TableScore" parent="Theme.AppCompat.Light.NoActionBar"/>
     <style name="ThemeOverlay.AppCompat" parent="Base.ThemeOverlay.AppCompat"/>
     <style name="ThemeOverlay.AppCompat.ActionBar" parent="Base.ThemeOverlay.AppCompat.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>

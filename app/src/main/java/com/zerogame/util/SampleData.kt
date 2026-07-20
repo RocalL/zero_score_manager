@@ -66,7 +66,7 @@ object SampleData {
                             zerosAchieved[pid] = zerosAchieved[pid]!! + 1
                             0
                         } else {
-                            rng.nextInt(-2, 13).coerceAtLeast(0)
+                            rng.nextInt(9, 45)
                         }
                         roundScores[pid]!!.add(score)
 

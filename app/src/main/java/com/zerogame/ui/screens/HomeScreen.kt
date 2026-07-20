@@ -107,7 +107,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "ZERO SCORE",
+                text = "TABLE SCORE",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.onBackground,

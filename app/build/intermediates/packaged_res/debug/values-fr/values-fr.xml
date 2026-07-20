@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
     <string name="back">Retour</string>
     <string name="cancel">Annuler</string>
+    <string name="card_picker_button">Choisir</string>
+    <string name="card_picker_confirm">Valider \u2014 %1$d pts</string>
+    <string name="card_picker_score">Score de la manche</string>
+    <string name="card_picker_selected">%1$d / %2$d cartes</string>
+    <string name="card_picker_title">Choisir les cartes \u2014 %1$s</string>
     <string name="coming_soon">Bientôt</string>
     <string name="data_export">Exporter</string>
     <string name="data_import">Importer</string>
@@ -108,6 +113,13 @@
     <string name="skyjo_enter_round_scores">Saisir les scores de la manche</string>
     <string name="skyjo_enter_round_scores_hint">Appuyez sur le drapeau pour marquer le joueur déclencheur</string>
     <string name="skyjo_new_game">Nouvelle partie Skyjo</string>
+    <string name="skyjo_picker_button">Choisir</string>
+    <string name="skyjo_picker_cards">%1$d cartes</string>
+    <string name="skyjo_picker_cols">Colonnes</string>
+    <string name="skyjo_picker_confirm">Valider — %1$d pts</string>
+    <string name="skyjo_picker_rows">Lignes</string>
+    <string name="skyjo_picker_score">Score de la manche</string>
+    <string name="skyjo_picker_title">Choisir les cartes — %1$s</string>
     <string name="skyjo_players_hint">2 à 8 joueurs</string>
     <string name="skyjo_start_game">Lancer la partie \u2014 %1$d joueurs</string>
     <string name="skyjo_submit_round">Valider la manche</string>

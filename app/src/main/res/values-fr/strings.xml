@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zero Score</string>
+    <string name="app_name">TableScore</string>
 
     <!-- Home -->
     <string name="home_score_manager">Gestionnaire de scores</string>
@@ -102,6 +102,22 @@
     <string name="skyjo_trigger">Déclencheur</string>
     <string name="skyjo_cols">Colonnes</string>
     <string name="skyjo_submit_round">Valider la manche</string>
+
+    <!-- Skyjo Card Picker -->
+    <string name="skyjo_picker_title">Choisir les cartes — %1$s</string>
+    <string name="skyjo_picker_cards">%1$d cartes</string>
+    <string name="skyjo_picker_score">Score de la manche</string>
+    <string name="skyjo_picker_cols">Colonnes</string>
+    <string name="skyjo_picker_rows">Lignes</string>
+    <string name="skyjo_picker_confirm">Valider — %1$d pts</string>
+    <string name="skyjo_picker_button">Choisir</string>
+
+    <!-- Card Picker -->
+    <string name="card_picker_title">Choisir les cartes \u2014 %1$s</string>
+    <string name="card_picker_selected">%1$d / %2$d cartes</string>
+    <string name="card_picker_score">Score de la manche</string>
+    <string name="card_picker_confirm">Valider \u2014 %1$d pts</string>
+    <string name="card_picker_button">Choisir</string>
 
     <!-- Game Types & Filters -->
     <string name="game_type_zero">Zero</string>

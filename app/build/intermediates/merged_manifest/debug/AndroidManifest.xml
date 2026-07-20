@@ -24,11 +24,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ZeroGame" >
+        android:testOnly="true"
+        android:theme="@style/Theme.TableScore" >
         <activity
             android:name="com.zerogame.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ZeroGame" >
+            android:theme="@style/Theme.TableScore" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
